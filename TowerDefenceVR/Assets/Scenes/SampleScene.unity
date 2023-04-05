@@ -2065,7 +2065,7 @@ MonoBehaviour:
   testText: {fileID: 733394856}
   inputField: {fileID: 582294953}
   generateButton: {fileID: 1590441522}
-  apiKey: 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
+  apiKey: 
 --- !u!4 &830695197
 Transform:
   m_ObjectHideFlags: 0
