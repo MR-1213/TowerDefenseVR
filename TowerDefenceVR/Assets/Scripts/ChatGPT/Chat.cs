@@ -16,7 +16,7 @@ public class Chat : MonoBehaviour
     [SerializeField] string apiKey; // NOTE: 入力したままコミットやリポジトリの公開などをしないこと
 
     OpenAIChatCompletionAPI chatCompletionAPI;
-    GenerateMagic generateMagic;
+    SearchMagicInformation searchMagicInformation;
 
     //初期メッセージを定義
     List<OpenAIChatCompletionAPI.Message> context = new List<OpenAIChatCompletionAPI.Message>()
@@ -78,9 +78,9 @@ public class Chat : MonoBehaviour
 
         //testText.text = "";
         test1Text.text = message.content;
-        generateMagic = new GenerateMagic(message.content);
-        test2Text.text = generateMagic.GetMagicInfo();
-        debugText.text = generateMagic.GetInfo();
+        searchMagicInformation = new SearchMagicInformation(message.content);
+        string[] informations = searchMagicInformation.GetMagicInfo();
+
         //AppendMessage(message);
         //1フレーム中断して再開(非同期処理)
         yield return null;
