@@ -8,7 +8,7 @@ public class Chat : MonoBehaviour
 {
     //[SerializeField] ChatMessageView messageViewTemplete;
     public TMP_Text debugText;
-    [SerializeField] TMP_Text test1Text;
+    public TMP_Text test1Text;
     public TMP_Text test2Text;
     [SerializeField] TMP_InputField inputField; //魔法の入力フィールド
     //[SerializeField] ScrollRect scrollRect;
@@ -17,6 +17,7 @@ public class Chat : MonoBehaviour
 
     OpenAIChatCompletionAPI chatCompletionAPI;
     SearchMagicInformation searchMagicInformation;
+    GenerateMagic generateMagic;
 
     //初期メッセージを定義
     List<OpenAIChatCompletionAPI.Message> context = new List<OpenAIChatCompletionAPI.Message>()
@@ -79,7 +80,12 @@ public class Chat : MonoBehaviour
         //testText.text = "";
         test1Text.text = message.content;
         searchMagicInformation = new SearchMagicInformation(message.content);
-        string[] informations = searchMagicInformation.GetMagicInfo();
+        string magicInfoKey = searchMagicInformation.GetMagicInfo();
+        test2Text.text = magicInfoKey;
+        
+        generateMagic = new GenerateMagic(magicInfoKey);
+        string generateMessage = generateMagic.Generate();
+        debugText.text = generateMessage;
 
         //AppendMessage(message);
         //1フレーム中断して再開(非同期処理)
