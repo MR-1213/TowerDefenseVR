@@ -11,6 +11,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject playerNewMagicCanvas;
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private TMP_InputField magicInputField;
+    [SerializeField] private LineRenderer lineRenderer;
     private bool canvasEnable = false;
     private TouchScreenKeyboard keyboard;
 
@@ -18,6 +19,7 @@ public class PlayerUIManager : MonoBehaviour
     {
         playerMagicsCanvas.SetActive(canvasEnable);
         playerNewMagicCanvas.SetActive(canvasEnable);
+        lineRenderer.enabled = false;
     }
 
     private void Update() 
@@ -27,6 +29,7 @@ public class PlayerUIManager : MonoBehaviour
         {
             canvasEnable = !canvasEnable;
             playerMagicsCanvas.SetActive(canvasEnable);
+            lineRenderer.enabled = canvasEnable;
             if(mainCamera != null)
             {
                 playerMagicsCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f;
@@ -72,5 +75,6 @@ public class PlayerUIManager : MonoBehaviour
         playerMagicsCanvas.SetActive(false);
         playerNewMagicCanvas.SetActive(false);
         canvasEnable = false;
+        lineRenderer.enabled = false;
     }
 }

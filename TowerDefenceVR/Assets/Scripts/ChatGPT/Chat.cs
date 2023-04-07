@@ -7,14 +7,16 @@ using TMPro;
 public class Chat : MonoBehaviour
 {
     //[SerializeField] ChatMessageView messageViewTemplete;
-    [SerializeField] private TMP_Text testText;
+    public TMP_Text debugText;
+    [SerializeField] TMP_Text test1Text;
+    public TMP_Text test2Text;
     [SerializeField] TMP_InputField inputField; //魔法の入力フィールド
     //[SerializeField] ScrollRect scrollRect;
     [SerializeField] Button generateButton; //生成ボタン
-
     [SerializeField] string apiKey; // NOTE: 入力したままコミットやリポジトリの公開などをしないこと
 
     OpenAIChatCompletionAPI chatCompletionAPI;
+    SearchMagicInformation searchMagicInformation;
 
     //初期メッセージを定義
     List<OpenAIChatCompletionAPI.Message> context = new List<OpenAIChatCompletionAPI.Message>()
@@ -25,10 +27,10 @@ public class Chat : MonoBehaviour
                         {
                         回答のフォーマット:
                         属性:<魔法名から推察された属性>
-                        威力:<魔法名から推察された威力の値(1-100)>
+                        威力:<魔法名から推察された威力の値(001-100)>
                         }
                         <魔法名から推察された属性>は<火><氷><水><雷><風><土><光><闇>のいずれかとします。推察できない魔法であった場合は<無>としてください。
-                        <魔法名から推察された威力>は最も弱いものを1、最も強いものを100として整数値で出来るだけ弱く推察してください。
+                        <魔法名から推察された威力>は最も弱いものを001、最も強いものを100として整数値で出来るだけ弱く推察してください。数値は必ず3桁で示してください。
 
                         回答のフォーマットに即した回答のみ答えてください。
                         次の会話からスタートします"
@@ -74,7 +76,11 @@ public class Chat : MonoBehaviour
         //レスポンスのリストの中から最も新しいレスポンス内容を取得する
         var message = request.Response.choices[0].message;
 
-        testText.text = message.content;
+        //testText.text = "";
+        test1Text.text = message.content;
+        searchMagicInformation = new SearchMagicInformation(message.content);
+        string[] informations = searchMagicInformation.GetMagicInfo();
+
         //AppendMessage(message);
         //1フレーム中断して再開(非同期処理)
         yield return null;
@@ -83,10 +89,11 @@ public class Chat : MonoBehaviour
         generateButton.interactable = true;
     }
 
+    /*
     void AppendMessage(OpenAIChatCompletionAPI.Message message)
     {
         context.Add(message);
-        /*
+        
         var messageView = Instantiate(messageViewTemplete);
         messageView.gameObject.name = "message";
         messageView.gameObject.SetActive(true);
@@ -98,6 +105,7 @@ public class Chat : MonoBehaviour
         {
             //saveScript.ExtractCode(message.content);
         }
-        */
+        
     }
+    */
 }
