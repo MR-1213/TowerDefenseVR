@@ -27,11 +27,11 @@ public class Chat : MonoBehaviour
             content = @"あなたは魔法の創造者です。私が挙げる魔法名に対して以下の情報を推察し、次に指定するフォーマットで回答してください。
                         {
                         回答のフォーマット:
-                        属性:<魔法名から推察された属性>
-                        威力:<魔法名から推察された威力の値(001-100)>
+                        属性:<魔法名から推察された属性>:attributeEnd
+                        威力:<魔法名から推察された威力の値(001-100)>:powerEnd
                         }
                         <魔法名から推察された属性>は<火><氷><水><雷><風><土><光><闇>のいずれかとします。推察できない魔法であった場合は<無>としてください。
-                        <魔法名から推察された威力>は最も弱いものを001、最も強いものを100として整数値で出来るだけ弱く推察してください。数値は必ず3桁で示してください。
+                        <魔法名から推察された威力>は最も弱いものを001、最も強いものを100として整数値で小さい値を推察してください。数値は必ず3桁で示してください。
 
                         回答のフォーマットに即した回答のみ答えてください。
                         次の会話からスタートします"
@@ -43,6 +43,18 @@ public class Chat : MonoBehaviour
         //messageViewTemplete.gameObject.SetActive(false);
         //generateButton.onClick.AddListener(OnSendClick);
         chatCompletionAPI = new OpenAIChatCompletionAPI(apiKey);
+    }
+
+    private void Start() 
+    {
+        generateMagic = GetComponent<GenerateMagic>();
+        //新たな魔法の入力を受け付ける
+        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ファイアボール" };
+        context.Add(message);
+        //AppendMessage(message);
+        inputField.text = "";
+        //ChatGPTとの通信準備開始
+        StartCoroutine(ChatCompletionRequest());
     }
 
     public void OnGenerateButtonClick()
@@ -81,11 +93,14 @@ public class Chat : MonoBehaviour
         test1Text.text = message.content;
         searchMagicInformation = new SearchMagicInformation(message.content);
         string magicInfoKey = searchMagicInformation.GetMagicInfo();
+        if(string.IsNullOrEmpty(magicInfoKey))
+        {
+            magicInfoKey = "魔法名が見つかりませんでした";
+        }
         test2Text.text = magicInfoKey;
-        
-        generateMagic = new GenerateMagic(magicInfoKey);
-        string generateMessage = generateMagic.Generate();
-        debugText.text = generateMessage;
+
+        GameObject magic = generateMagic.Generate(magicInfoKey);
+        debugText.text = magic.name;
 
         //AppendMessage(message);
         //1フレーム中断して再開(非同期処理)
