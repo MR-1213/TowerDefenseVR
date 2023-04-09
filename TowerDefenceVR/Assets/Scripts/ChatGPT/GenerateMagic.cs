@@ -275,19 +275,23 @@ public class GenerateMagic : MonoBehaviour
         
         if(actionDictionary.ContainsKey(attributeKey))
         {
+            //指定の魔法が存在する場合は威力に応じて取得する
             actionDictionary[attributeKey](powerKey);
+            //魔法が取得できなかった場合はnullを返す
             if(selectedMagic == null)
             {
                 return selectedMagic;
             }
+
             //魔法生成の際はコントローラーから手に変更する
             changeHandAndController.Switch();
-            //手のアンカーオブジェクトの子オブジェクトとして生成する
+            //手のアンカーオブジェクトの子オブジェクトに設定する
             selectedMagic.transform.SetParent(magicParent.transform);
             return selectedMagic;
         }
         else
         {
+            //指定の魔法が存在しない場合はnullを返す
             selectedMagic = null;
             return selectedMagic;
         }

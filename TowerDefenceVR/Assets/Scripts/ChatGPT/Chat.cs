@@ -6,14 +6,10 @@ using TMPro;
 
 public class Chat : MonoBehaviour
 {
-    //[SerializeField] ChatMessageView messageViewTemplete;
-    public TMP_Text debugText;
-    public TMP_Text test1Text;
-    public TMP_Text test2Text;
     [SerializeField] TMP_InputField inputField; //魔法の入力フィールド
-    //[SerializeField] ScrollRect scrollRect;
     [SerializeField] Button generateButton; //生成ボタン
-    [SerializeField] string apiKey; // NOTE: 入力したままコミットやリポジトリの公開などをしないこと
+    [SerializeField] TMP_Text errorMessage; //エラー時のメッセージ
+    [SerializeField] string apiKey; // NOTE: 入力したままコミットやリポジトリの公開などをしないこと、公開した場合自動的に無効になる。
 
     OpenAIChatCompletionAPI chatCompletionAPI;
     SearchMagicInformation searchMagicInformation;
@@ -31,7 +27,7 @@ public class Chat : MonoBehaviour
                         威力:<魔法名から推察された威力の値(001-100)>:powerEnd
                         }
                         <魔法名から推察された属性>は<火><氷><水><雷><風><土><光><闇>のいずれかとします。推察できない魔法であった場合は<無>としてください。
-                        <魔法名から推察された威力>は最も弱いものを001、最も強いものを100として整数値で小さい値を推察してください。数値は必ず3桁で示してください。
+                        <魔法名から推察された威力>は最も弱いものを001、最も強いものを100として整数値で出来るだけ小さい値を推察してください。数値は必ず3桁で示してください。
 
                         回答のフォーマットに即した回答のみ答えてください。
                         次の会話からスタートします"
@@ -40,21 +36,12 @@ public class Chat : MonoBehaviour
 
     void Awake()
     {
-        //messageViewTemplete.gameObject.SetActive(false);
-        //generateButton.onClick.AddListener(OnSendClick);
         chatCompletionAPI = new OpenAIChatCompletionAPI(apiKey);
     }
 
     private void Start() 
     {
         generateMagic = GetComponent<GenerateMagic>();
-        //新たな魔法の入力を受け付ける
-        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ファイアボール" };
-        context.Add(message);
-        //AppendMessage(message);
-        inputField.text = "";
-        //ChatGPTとの通信準備開始
-        StartCoroutine(ChatCompletionRequest());
     }
 
     public void OnGenerateButtonClick()
@@ -77,7 +64,7 @@ public class Chat : MonoBehaviour
 
         //1フレーム中断して再開する(非同期処理)
         yield return null;
-        //scrollRect.verticalNormalizedPosition = 0;
+
         //入力内容から新たなリクエストを生成する
         var request = chatCompletionAPI.CreateCompletionRequest(
             new OpenAIChatCompletionAPI.RequestData() { messages = context }
@@ -85,48 +72,35 @@ public class Chat : MonoBehaviour
         //リクエストを送信する
         yield return request.Send();
         //レスポンスがエラーであった場合はエラー処理
-        if (request.IsError) throw new System.Exception(request.Error);
+        if (request.IsError)
+        {
+            errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+            yield break;
+        }
         //レスポンスのリストの中から最も新しいレスポンス内容を取得する
         var message = request.Response.choices[0].message;
 
-        //testText.text = "";
-        test1Text.text = message.content;
+        //レスポンスから魔法の情報を取得する
         searchMagicInformation = new SearchMagicInformation(message.content);
         string magicInfoKey = searchMagicInformation.GetMagicInfo();
         if(string.IsNullOrEmpty(magicInfoKey))
         {
-            magicInfoKey = "魔法名が見つかりませんでした";
+            errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+            yield break;
         }
-        test2Text.text = magicInfoKey;
 
+        //魔法の生成をする
         GameObject magic = generateMagic.Generate(magicInfoKey);
-        debugText.text = magic.name;
+        if(magic == null)
+        {
+            errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+            yield break;
+        }
 
-        //AppendMessage(message);
         //1フレーム中断して再開(非同期処理)
         yield return null;
-        //scrollRect.verticalNormalizedPosition = 0;
+
         //新たな魔法の生成を受け付けられるようにする
         generateButton.interactable = true;
     }
-
-    /*
-    void AppendMessage(OpenAIChatCompletionAPI.Message message)
-    {
-        context.Add(message);
-        
-        var messageView = Instantiate(messageViewTemplete);
-        messageView.gameObject.name = "message";
-        messageView.gameObject.SetActive(true);
-        messageView.transform.SetParent(messageViewTemplete.transform.parent, false);
-        messageView.Role = message.role;
-        messageView.Content = message.content;
-
-        if(message.role != "user")
-        {
-            //saveScript.ExtractCode(message.content);
-        }
-        
-    }
-    */
 }
