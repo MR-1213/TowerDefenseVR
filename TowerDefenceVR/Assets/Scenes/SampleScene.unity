@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.46602172, g: 0.5960813, b: 0.7371453, a: 1}
+  m_IndirectSpecularColor: {r: 0.42668882, g: 0.56079096, b: 0.7084362, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30D5\u30A1\u30A4\u30A2\u30DC\u30FC\u30EB"
+  m_text: "\u30C6\u30B9\u30C8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
   m_sharedMaterial: {fileID: -7786892333198751292, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
@@ -801,7 +801,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30D5\u30A1\u30A4\u30A2\u30DC\u30FC\u30EB"
+  m_text: "\u30C6\u30B9\u30C8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
   m_sharedMaterial: {fileID: -7786892333198751292, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
@@ -1214,10 +1214,34 @@ MonoBehaviour:
       m_Calls: []
   m_OnSelect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 830695196}
+        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
+        m_MethodName: MagicInvisibility
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDeselect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 830695196}
+        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
+        m_MethodName: MagicVisibility
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []
@@ -1785,7 +1809,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: "\u30C6\u30B9\u30C8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
   m_sharedMaterial: {fileID: -7786892333198751292, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
@@ -2220,7 +2244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 582294953}
   generateButton: {fileID: 1590441522}
-  errorMessage: {fileID: 0}
+  errorMessage: {fileID: 84198239}
   apiKey: 
 --- !u!4 &830695197
 Transform:
@@ -3803,7 +3827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 112276, guid: d9809c5e8418bb047bf2c8ba1d1a2cec, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 488160, guid: d9809c5e8418bb047bf2c8ba1d1a2cec, type: 3}
       propertyPath: m_RootOrder
@@ -3925,7 +3949,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 143668, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 414912, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_RootOrder
@@ -4001,7 +4025,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 195418, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 422740, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
       propertyPath: m_RootOrder
@@ -4116,7 +4140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: "\u30C6\u30B9\u30C8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
   m_sharedMaterial: {fileID: -7786892333198751292, guid: 669f0c5478945a04aa670fdd52311fae, type: 2}
@@ -4459,7 +4483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 112276, guid: d9809c5e8418bb047bf2c8ba1d1a2cec, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 488160, guid: d9809c5e8418bb047bf2c8ba1d1a2cec, type: 3}
       propertyPath: m_RootOrder
@@ -4559,6 +4583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   generateText: {fileID: 733394856}
   chat: {fileID: 830695196}
+  changeHandAndController: {fileID: 312755091}
   playerMagicsCanvas: {fileID: 369783134}
   playerNewMagicCanvas: {fileID: 692830792}
   mainCamera: {fileID: 2028104527}

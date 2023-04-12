@@ -14,6 +14,7 @@ public class Chat : MonoBehaviour
     OpenAIChatCompletionAPI chatCompletionAPI;
     SearchMagicInformation searchMagicInformation;
     GenerateMagic generateMagic;
+    private GameObject currentMagic;
 
     //初期メッセージを定義
     List<OpenAIChatCompletionAPI.Message> context = new List<OpenAIChatCompletionAPI.Message>()
@@ -51,10 +52,31 @@ public class Chat : MonoBehaviour
         //新たな魔法の入力を受け付ける
         var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = inputField.text };
         context.Add(message);
-        //AppendMessage(message);
+        //入力フィールドを空にする
         inputField.text = "";
+        //前回生成した魔法を削除する
+        if(currentMagic != null)
+        {
+            Destroy(currentMagic);
+        }
         //ChatGPTとの通信準備開始
         StartCoroutine(ChatCompletionRequest());
+    }
+
+    public void MagicInvisibility()
+    {
+        if(currentMagic != null)
+        {
+            currentMagic.SetActive(false);
+        }
+    }
+
+    public void MagicVisibility()
+    {
+        if(currentMagic != null)
+        {
+            currentMagic.SetActive(true);
+        }
     }
 
     IEnumerator ChatCompletionRequest()
@@ -96,6 +118,7 @@ public class Chat : MonoBehaviour
             errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
             yield break;
         }
+        currentMagic = magic;
 
         //1フレーム中断して再開(非同期処理)
         yield return null;

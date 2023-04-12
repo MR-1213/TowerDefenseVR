@@ -7,6 +7,7 @@ public class PlayerUIManager : MonoBehaviour
 {
     public TMP_Text generateText;
     [SerializeField] private Chat chat;
+    [SerializeField] private ChangeHandAndController changeHandAndController;
     [SerializeField] private GameObject playerMagicsCanvas;
     [SerializeField] private GameObject playerNewMagicCanvas;
     [SerializeField] private GameObject mainCamera;
@@ -29,9 +30,11 @@ public class PlayerUIManager : MonoBehaviour
         {
             canvasEnable = !canvasEnable;
             playerMagicsCanvas.SetActive(canvasEnable);
+            //レーザーポインターの表示・非表示も切り替える
             lineRenderer.enabled = canvasEnable;
             if(mainCamera != null)
             {
+                //カメラの向いている方向にUIを配置する
                 playerMagicsCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f;
                 playerNewMagicCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f - mainCamera.transform.up * 1.0f;
 
@@ -61,6 +64,7 @@ public class PlayerUIManager : MonoBehaviour
 
     public void OnGenerateButton()
     {
+        changeHandAndController.SwitchToController();
         chat.OnGenerateButtonClick();
     }
 
