@@ -30,6 +30,8 @@ public class PlayerUIManager : MonoBehaviour
         {
             canvasEnable = !canvasEnable;
             playerMagicsCanvas.SetActive(canvasEnable);
+            //手とコントローラーを切り替える
+            changeHandAndController.Switch();
             //レーザーポインターの表示・非表示も切り替える
             lineRenderer.enabled = canvasEnable;
             if(mainCamera != null)
