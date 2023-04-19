@@ -6,9 +6,12 @@ using UnityEngine.Playables;
 public class TutorialManager : MonoBehaviour
 {
     private PlayableDirector playableDirector;
-    float touchStickTime = 0.0f;
-    private float rightStickThreshold = 10.0f;
+    private float touchStickTime = 0.0f;
+    private float rightStickThreshold = 8.0f;
     private float leftStickThreshold = 5.0f;
+
+    public bool MovedTrigger { get; set; } = false;
+    public bool GrabbedTrigger { get; set; } = false;
 
     private void Start()
     {
@@ -22,9 +25,17 @@ public class TutorialManager : MonoBehaviour
         {
             case "RightThumbstick":
                 StartCoroutine(WaitAndResumeForRightThick());
+                Debug.Log("RightThumbstick");
                 break;
             case "LeftThumbstick":
                 StartCoroutine(WaitAndResumeForLeftThick());
+                Debug.Log("LeftThumbstick");
+                break;
+            case "MoveToSwordPoint":
+                StartCoroutine(MovedToSwordPoint());
+                break;
+            case "GrabbedSword":
+                StartCoroutine(GrabbedSword());
                 break;
         }
     }
@@ -73,6 +84,38 @@ public class TutorialManager : MonoBehaviour
 
             if(touchStickTime > leftStickThreshold)
             {
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator MovedToSwordPoint()
+    {
+        while(true)
+        {
+            if(MovedTrigger)
+            {
+                MovedTrigger = false;
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator GrabbedSword()
+    {
+        while(true)
+        {
+            if(GrabbedTrigger)
+            {
+                GrabbedTrigger = false;
                 break;
             }
 
