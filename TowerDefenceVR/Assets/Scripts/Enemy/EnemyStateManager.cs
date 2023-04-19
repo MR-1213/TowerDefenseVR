@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using DG.Tweening;
 
 public class EnemyStateManager : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
+    //[SerializeField] private AudioClip[] audioClips; //0:歩く音 1:攻撃音 2:死亡音
     private Animator animator;
     private NavMeshAgent navMeshAgent;
+    private AudioSource audioSource;
 
     private enum EnemyState{
         Idle,
@@ -23,6 +26,7 @@ public class EnemyStateManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other) 
@@ -53,7 +57,7 @@ public class EnemyStateManager : MonoBehaviour
                     animator.SetTrigger("IdleTrigger");
                 }
 
-                if(Vector3.Distance(transform.position, playerTransform.position) < 6.0f)
+                if(Vector3.Distance(transform.position, playerTransform.position) < 10.0f)
                 {
                     ChangeState(EnemyState.Chase);
                     return;
@@ -70,7 +74,7 @@ public class EnemyStateManager : MonoBehaviour
                     animator.SetTrigger("ChaseTrigger");
                 }
 
-                if(Vector3.Distance(transform.position, playerTransform.position) >= 6.0f)
+                if(Vector3.Distance(transform.position, playerTransform.position) >= 10.0f)
                 {
                     ChangeState(EnemyState.Idle);
                     return;
@@ -108,8 +112,10 @@ public class EnemyStateManager : MonoBehaviour
                     animator.SetTrigger("DyingTrigger");
                 }
 
-                if(stateTime > 10.0f)
+                if(stateTime > 3.0f)
                 {
+                    //audioSource.PlayOneShot(audioClips[2]);
+                    //DOVirtual.DelayedCall(3.0f, () => Destroy(this.gameObject), false);
                     Destroy(this.gameObject);
                 }
 

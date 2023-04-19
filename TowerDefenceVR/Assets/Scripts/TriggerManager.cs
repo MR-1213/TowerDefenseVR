@@ -28,6 +28,11 @@ public class TriggerManager : MonoBehaviour
             transform.parent.gameObject.transform.position = respawnPosition;
             grabSwordTime = 0f;
         }
+
+        if(other.gameObject.CompareTag("Player") && gameObject.name == "SkeletonWarrior")
+        {
+            tutorialManager.MovedTrigger = true;
+        }
     }
 
     private void OnTriggerStay(Collider other) 

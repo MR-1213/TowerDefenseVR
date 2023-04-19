@@ -37,6 +37,12 @@ public class TutorialManager : MonoBehaviour
             case "GrabbedSword":
                 StartCoroutine(GrabbedSword());
                 break;
+            case "MoveToEnemyPoint":
+                StartCoroutine(MovedToEnemyPoint());
+                break;
+            case "KilledEnemy":
+                StartCoroutine(KilledEnemy());
+                break;
         }
     }
 
@@ -116,6 +122,35 @@ public class TutorialManager : MonoBehaviour
             if(GrabbedTrigger)
             {
                 GrabbedTrigger = false;
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator MovedToEnemyPoint()
+    {
+        while(true)
+        {
+            if(MovedTrigger)
+            {
+                MovedTrigger = false;
+                break;
+            }
+
+            yield return null;
+        }
+    }
+
+    IEnumerator KilledEnemy()
+    {
+        while(true)
+        {
+            if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+            {
                 break;
             }
 
