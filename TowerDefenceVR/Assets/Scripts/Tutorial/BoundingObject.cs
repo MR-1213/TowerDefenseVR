@@ -12,7 +12,7 @@ public class BoundingObject : MonoBehaviour
         if(!isBounding)
         {
             isBounding = true;
-            transform.DOLocalMoveY(2.0f, 0.7f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetLink(gameObject);
+            transform.DOLocalMoveY(1.0f, 0.7f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetLink(gameObject).SetRelative();
         }
         else
         {

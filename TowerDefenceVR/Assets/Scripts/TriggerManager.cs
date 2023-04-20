@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class TriggerManager : MonoBehaviour
 {
@@ -16,6 +17,13 @@ public class TriggerManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //チュートリアル : プレイヤーが家の中から出られないことを伝える
+        if(other.gameObject.CompareTag("Player") && gameObject.name == "HouseBarrier")
+        {
+            var renderer = gameObject.GetComponent<Renderer>();
+            renderer.material.DOFade(0.3f, 0.5f);
+            
+        }
         //チュートリアル : 剣の近くに移動したことを検知する
         if(other.gameObject.CompareTag("Player") && gameObject.name == "TableWithSword")
         {
@@ -23,13 +31,16 @@ public class TriggerManager : MonoBehaviour
         }
 
         //チュートリアル : 剣を落としたことを検知し、剣を元の位置に戻す
-        if(other.gameObject.CompareTag("Ground") && transform.parent.gameObject.name == "Sword")
+        if(other.gameObject.CompareTag("Ground") && gameObject.CompareTag("PlayerSword"))
         {
+            var rigidbody = gameObject.GetComponent<Rigidbody>();
+            rigidbody.velocity = Vector3.zero;
             transform.parent.gameObject.transform.position = respawnPosition;
             grabSwordTime = 0f;
         }
 
-        if(other.gameObject.CompareTag("Player") && gameObject.name == "SkeletonWarrior")
+        //チュートリアル : 敵に近づいたことを検知する
+        if(other.gameObject.CompareTag("Player") && gameObject.name == "EnemyTriggerManager")
         {
             tutorialManager.MovedTrigger = true;
         }
@@ -38,10 +49,10 @@ public class TriggerManager : MonoBehaviour
     private void OnTriggerStay(Collider other) 
     {
         //チュートリアル : 剣を掴んだことを検知する
-        if(other.gameObject.CompareTag("Player") && transform.parent.gameObject.name == "Sword")
+        if(other.gameObject.CompareTag("Player") && gameObject.CompareTag("PlayerSword"))
         {
             grabSwordTime += Time.deltaTime;
-            if(grabSwordTime > 3.0f)
+            if(grabSwordTime > 2.0f)
             {
                 tutorialManager.GrabbedTrigger = true;
                 grabSwordTime = 0f;
