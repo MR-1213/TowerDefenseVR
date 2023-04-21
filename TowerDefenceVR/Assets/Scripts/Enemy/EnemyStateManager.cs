@@ -112,7 +112,7 @@ public class EnemyStateManager : MonoBehaviour
                     animator.SetTrigger("DyingTrigger");
                 }
 
-                if(stateTime > 3.0f)
+                if(stateTime > 6.0f)
                 {
                     //audioSource.PlayOneShot(audioClips[2]);
                     //DOVirtual.DelayedCall(3.0f, () => Destroy(this.gameObject), false);

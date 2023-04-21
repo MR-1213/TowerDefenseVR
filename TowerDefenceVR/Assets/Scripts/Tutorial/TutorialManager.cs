@@ -12,6 +12,7 @@ public class TutorialManager : MonoBehaviour
 
     public bool MovedTrigger { get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
+    public bool ClickedTrigger { get; set; } = false;
 
     private void Start()
     {
@@ -25,11 +26,9 @@ public class TutorialManager : MonoBehaviour
         {
             case "RightThumbstick":
                 StartCoroutine(WaitAndResumeForRightThick());
-                Debug.Log("RightThumbstick");
                 break;
             case "LeftThumbstick":
                 StartCoroutine(WaitAndResumeForLeftThick());
-                Debug.Log("LeftThumbstick");
                 break;
             case "MoveToSwordPoint":
                 StartCoroutine(MovedToSwordPoint());
@@ -42,6 +41,12 @@ public class TutorialManager : MonoBehaviour
                 break;
             case "KilledEnemy":
                 StartCoroutine(KilledEnemy());
+                break;
+            case "ClickedXButton":
+                StartCoroutine(ClickedXButton());
+                break;
+            case "ClickedGenerateNewMagic":
+                StartCoroutine(ClickedGenerateNewMagicButton());
                 break;
         }
     }
@@ -117,6 +122,7 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator GrabbedSword()
     {
+        GrabbedTrigger = false;
         while(true)
         {
             if(GrabbedTrigger)
@@ -133,6 +139,7 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator MovedToEnemyPoint()
     {
+        MovedTrigger = false;
         while(true)
         {
             if(MovedTrigger)
@@ -143,6 +150,8 @@ public class TutorialManager : MonoBehaviour
 
             yield return null;
         }
+
+        ResumeTimeline();
     }
 
     IEnumerator KilledEnemy()
@@ -151,6 +160,39 @@ public class TutorialManager : MonoBehaviour
         {
             if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
             {
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator ClickedXButton()
+    {
+        while(true)
+        {
+            if(OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator ClickedGenerateNewMagicButton()
+    {
+        //イベント開始前にクリックされている場合は、クリックされていない状態にする
+        ClickedTrigger = false;
+        while(true)
+        {
+            if(ClickedTrigger)
+            {
+                ClickedTrigger = false;
                 break;
             }
 
