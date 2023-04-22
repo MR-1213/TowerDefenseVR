@@ -13,6 +13,7 @@ public class TutorialManager : MonoBehaviour
     public bool MovedTrigger { get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
     public bool ClickedTrigger { get; set; } = false;
+    public bool GeneratedTrigger { get; set; } = false;
 
     private void Start()
     {
@@ -47,6 +48,9 @@ public class TutorialManager : MonoBehaviour
                 break;
             case "ClickedGenerateNewMagic":
                 StartCoroutine(ClickedGenerateNewMagicButton());
+                break;
+            case "GeneratedMagic":
+                StartCoroutine(GeneratedMagic());
                 break;
         }
     }
@@ -193,6 +197,23 @@ public class TutorialManager : MonoBehaviour
             if(ClickedTrigger)
             {
                 ClickedTrigger = false;
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator GeneratedMagic()
+    {
+        GeneratedTrigger = false;
+        while(true)
+        {
+            if(GeneratedTrigger)
+            {
+                GeneratedTrigger = false;
                 break;
             }
 

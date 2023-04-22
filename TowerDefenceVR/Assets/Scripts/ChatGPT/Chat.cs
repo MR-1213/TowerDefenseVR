@@ -6,6 +6,7 @@ using TMPro;
 
 public class Chat : MonoBehaviour
 {
+    [SerializeField] TutorialManager tutorialManager;
     [SerializeField] TMP_InputField inputField; //魔法の入力フィールド
     [SerializeField] Button generateButton; //生成ボタン
     [SerializeField] TMP_Text errorMessage; //エラー時のメッセージ
@@ -59,6 +60,8 @@ public class Chat : MonoBehaviour
         {
             Destroy(currentMagic);
         }
+        //エラーメッセージを空にする
+        errorMessage.text = "";
         //ChatGPTとの通信準備開始
         StartCoroutine(ChatCompletionRequest());
     }
@@ -96,7 +99,7 @@ public class Chat : MonoBehaviour
         //レスポンスがエラーであった場合はエラー処理
         if (request.IsError)
         {
-            errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+            GenerateErrorMessage();
             yield break;
         }
         //レスポンスのリストの中から最も新しいレスポンス内容を取得する
@@ -107,7 +110,7 @@ public class Chat : MonoBehaviour
         string magicInfoKey = searchMagicInformation.GetMagicInfo();
         if(string.IsNullOrEmpty(magicInfoKey))
         {
-            errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+            GenerateErrorMessage();
             yield break;
         }
 
@@ -115,15 +118,23 @@ public class Chat : MonoBehaviour
         GameObject magic = generateMagic.Generate(magicInfoKey);
         if(magic == null)
         {
-            errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+            GenerateErrorMessage();
             yield break;
         }
-        currentMagic = magic;
+        //currentMagic = magic;
 
         //1フレーム中断して再開(非同期処理)
         yield return null;
 
+        //チュートリアル再開
+        tutorialManager.GeneratedTrigger = true;
         //新たな魔法の生成を受け付けられるようにする
+        generateButton.interactable = true;
+    }
+
+    private void GenerateErrorMessage()
+    {
+        errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
         generateButton.interactable = true;
     }
 }

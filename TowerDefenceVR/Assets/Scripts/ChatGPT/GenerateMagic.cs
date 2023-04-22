@@ -41,7 +41,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[0], magicParent);
+                            selectedMagic = Instantiate(magics[0], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -71,7 +71,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[1], magicParent);
+                            selectedMagic = Instantiate(magics[1], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -101,7 +101,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[2], magicParent);
+                            selectedMagic = Instantiate(magics[2], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -131,7 +131,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[3], magicParent);
+                            selectedMagic = Instantiate(magics[3], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -161,7 +161,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[4], magicParent);
+                            selectedMagic = Instantiate(magics[4], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -190,7 +190,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[5], magicParent);
+                            selectedMagic = Instantiate(magics[5], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -220,7 +220,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[6], magicParent);
+                            selectedMagic = Instantiate(magics[6], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -250,7 +250,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[7], magicParent);
+                            selectedMagic = Instantiate(magics[7], magicParent.position, magicParent.rotation, magicParent);
                             break;
                         default:
                             selectedMagic = null;
@@ -286,7 +286,7 @@ public class GenerateMagic : MonoBehaviour
             //魔法生成の際はコントローラーから手に変更する
             changeHandAndController.Switch();
             //手のアンカーオブジェクトの子オブジェクトに設定する
-            selectedMagic.transform.SetParent(magicParent.transform);
+            //selectedMagic.transform.SetParent(magicParent.transform);
             return selectedMagic;
         }
         else
