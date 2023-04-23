@@ -39,10 +39,13 @@ public class HS_ProjectileMover : MonoBehaviour
 
     void FixedUpdate ()
     {
-		if (speed != 0)
+        if (OVRInput.GetUp(OVRInput.RawButton.LHandTrigger))
         {
-            rb.velocity = transform.forward * speed;
-            //transform.position += transform.forward * (speed * Time.deltaTime);         
+            if (speed != 0)
+            {
+                rb.velocity = transform.forward * speed;
+                //transform.position += transform.forward * (speed * Time.deltaTime);         
+            }
         }
 	}
 

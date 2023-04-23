@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.43055704, g: 0.5636739, b: 0.7119701, a: 1}
+  m_IndirectSpecularColor: {r: 0.46602172, g: 0.5960813, b: 0.7371453, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1956,7 +1956,7 @@ GameObject:
   - component: {fileID: 343177561}
   - component: {fileID: 343177560}
   m_Layer: 5
-  m_Name: GeneratedMagicButton (2)
+  m_Name: GeneratedMagicButton (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3643,34 +3643,10 @@ MonoBehaviour:
       m_Calls: []
   m_OnSelect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 830695196}
-        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
-        m_MethodName: MagicInvisibility
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnDeselect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 830695196}
-        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
-        m_MethodName: MagicVisibility
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []
@@ -5191,7 +5167,12 @@ MonoBehaviour:
   inputField: {fileID: 582294953}
   generateButton: {fileID: 1590441522}
   errorMessage: {fileID: 84198239}
-  apiKey: 
+  apiKey: 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
+  savedMagicButtons:
+  - {fileID: 958254074}
+  - {fileID: 987264351}
+  - {fileID: 1058445620}
+  - {fileID: 343177560}
 --- !u!4 &830695197
 Transform:
   m_ObjectHideFlags: 0
@@ -6524,7 +6505,7 @@ GameObject:
   - component: {fileID: 1058445621}
   - component: {fileID: 1058445620}
   m_Layer: 5
-  m_Name: GeneratedMagicButton (1)
+  m_Name: GeneratedMagicButton (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6837,7 +6818,7 @@ GameObject:
   - component: {fileID: 1140681464}
   - component: {fileID: 1140681463}
   m_Layer: 5
-  m_Name: GeneratedMagicButton (3)
+  m_Name: GeneratedMagicButton (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7944,7 +7925,6 @@ GameObject:
   - component: {fileID: 1288318878}
   - component: {fileID: 1288318881}
   - component: {fileID: 1288318880}
-  - component: {fileID: 1288318879}
   - component: {fileID: 1288318882}
   m_Layer: 0
   m_Name: Canvas
@@ -7975,25 +7955,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1288318879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1288318877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aaf960227867044282d921171d2d7ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  pointer: {fileID: 0}
-  sortOrder: 0
 --- !u!114 &1288318880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11307,6 +11268,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4188411787382858}
     m_Modifications:
+    - target: {fileID: 105812, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 135332, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 143668, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_Name
       value: CustomHandLeft
@@ -13858,7 +13827,6 @@ GameObject:
   - component: {fileID: 1962058369}
   - component: {fileID: 1962058373}
   - component: {fileID: 1962058372}
-  - component: {fileID: 1962058371}
   - component: {fileID: 1962058370}
   m_Layer: 0
   m_Name: Canvas
@@ -13901,25 +13869,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1962058371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1962058368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aaf960227867044282d921171d2d7ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  pointer: {fileID: 0}
-  sortOrder: 0
 --- !u!114 &1962058372
 MonoBehaviour:
   m_ObjectHideFlags: 0

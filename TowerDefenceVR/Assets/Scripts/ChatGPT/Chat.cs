@@ -15,7 +15,11 @@ public class Chat : MonoBehaviour
     OpenAIChatCompletionAPI chatCompletionAPI;
     SearchMagicInformation searchMagicInformation;
     GenerateMagic generateMagic;
-    private GameObject currentMagic;
+
+    [SerializeField] private Button[] savedMagicButtons = new Button[4];
+    private TMP_Text[] magicTexts = new TMP_Text[4];
+    private int indexCount = 0;
+    private string newMagicName = "";
 
     //初期メッセージを定義
     List<OpenAIChatCompletionAPI.Message> context = new List<OpenAIChatCompletionAPI.Message>()
@@ -44,6 +48,24 @@ public class Chat : MonoBehaviour
     private void Start() 
     {
         generateMagic = GetComponent<GenerateMagic>();
+
+        int counter = 0;
+        foreach(Button savedMagicButton in savedMagicButtons)
+        {
+            magicTexts[counter] = savedMagicButton.gameObject.GetComponentInChildren<TMP_Text>();
+            counter++;
+        }
+
+        //新たな魔法の入力を受け付ける
+        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ライトニング" };
+        context.Add(message);
+        //魔法名を保存して入力フィールドを空にする
+        newMagicName = "ライトニング";
+        inputField.text = "";
+        //エラーメッセージを空にする
+        errorMessage.text = "";
+        //ChatGPTとの通信準備開始
+        StartCoroutine(ChatCompletionRequest());
     }
 
     public void OnGenerateButtonClick()
@@ -53,33 +75,13 @@ public class Chat : MonoBehaviour
         //新たな魔法の入力を受け付ける
         var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = inputField.text };
         context.Add(message);
-        //入力フィールドを空にする
+        //魔法名を保存して入力フィールドを空にする
+        newMagicName = inputField.text;
         inputField.text = "";
-        //前回生成した魔法を削除する
-        if(currentMagic != null)
-        {
-            Destroy(currentMagic);
-        }
         //エラーメッセージを空にする
         errorMessage.text = "";
         //ChatGPTとの通信準備開始
         StartCoroutine(ChatCompletionRequest());
-    }
-
-    public void MagicInvisibility()
-    {
-        if(currentMagic != null)
-        {
-            currentMagic.SetActive(false);
-        }
-    }
-
-    public void MagicVisibility()
-    {
-        if(currentMagic != null)
-        {
-            currentMagic.SetActive(true);
-        }
     }
 
     IEnumerator ChatCompletionRequest()
@@ -121,7 +123,17 @@ public class Chat : MonoBehaviour
             GenerateErrorMessage();
             yield break;
         }
-        //currentMagic = magic;
+
+        //生成した魔法を保存する
+        //保存数が5個を超える場合は古いものから削除する
+        savedMagicButtons[indexCount].onClick.RemoveAllListeners();
+        savedMagicButtons[indexCount].onClick.AddListener(() => generateMagic.GenerateSavedMagic(indexCount));
+        magicTexts[indexCount].text = newMagicName;
+        indexCount++;
+        if(indexCount > 3)
+        {
+            indexCount = 0;
+        }
 
         //1フレーム中断して再開(非同期処理)
         yield return null;

@@ -12,6 +12,8 @@ public class GenerateMagic : MonoBehaviour
     private string powerKey;
     private string message;
     private GameObject selectedMagic;
+    private int selectedMagicIndex = -1;
+    private Dictionary<int, GameObject> savedMagicDictionary =  new Dictionary< int, GameObject>();
 
     Dictionary<string, Action<string>> actionDictionary = new Dictionary<string, Action<string>>();
 
@@ -42,6 +44,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[0], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 0;
                             break;
                         default:
                             selectedMagic = null;
@@ -72,6 +75,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[1], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 1;
                             break;
                         default:
                             selectedMagic = null;
@@ -102,6 +106,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[2], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 2;
                             break;
                         default:
                             selectedMagic = null;
@@ -132,6 +137,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[3], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 3;
                             break;
                         default:
                             selectedMagic = null;
@@ -162,6 +168,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[4], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 4;
                             break;
                         default:
                             selectedMagic = null;
@@ -191,6 +198,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[5], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 5;
                             break;
                         default:
                             selectedMagic = null;
@@ -221,6 +229,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[6], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 6;
                             break;
                         default:
                             selectedMagic = null;
@@ -251,6 +260,7 @@ public class GenerateMagic : MonoBehaviour
                         case 90:
                         case 100:
                             selectedMagic = Instantiate(magics[7], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagicIndex = 7;
                             break;
                         default:
                             selectedMagic = null;
@@ -285,8 +295,7 @@ public class GenerateMagic : MonoBehaviour
 
             //魔法生成の際はコントローラーから手に変更する
             changeHandAndController.Switch();
-            //手のアンカーオブジェクトの子オブジェクトに設定する
-            //selectedMagic.transform.SetParent(magicParent.transform);
+            
             return selectedMagic;
         }
         else
@@ -294,6 +303,47 @@ public class GenerateMagic : MonoBehaviour
             //指定の魔法が存在しない場合はnullを返す
             selectedMagic = null;
             return selectedMagic;
+        }
+    }
+
+    public void GenerateSavedMagic(int buttonIndexCount)
+    {
+        if(savedMagicDictionary.ContainsKey(buttonIndexCount) && selectedMagicIndex == -1)
+        {
+            Instantiate(savedMagicDictionary[buttonIndexCount], magicParent.position, magicParent.rotation, magicParent);
+        }
+        else
+        {
+            switch(selectedMagicIndex)
+            {
+                case 0:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[0]);
+                    break;
+                case 1:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[1]);
+                    break;
+                case 2:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[2]);
+                    break;
+                case 3:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[3]);
+                    break;
+                case 4:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[4]);
+                    break;
+                case 5:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[5]);
+                    break;
+                case 6:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[6]);
+                    break;
+                case 7:
+                    savedMagicDictionary.Add(buttonIndexCount, magics[7]);
+                    break;
+            }
+
+            Instantiate(savedMagicDictionary[buttonIndexCount], magicParent.position, magicParent.rotation, magicParent);
+            selectedMagicIndex = -1;
         }
     }
 }

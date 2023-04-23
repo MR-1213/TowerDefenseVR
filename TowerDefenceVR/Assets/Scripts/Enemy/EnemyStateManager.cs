@@ -31,7 +31,7 @@ public class EnemyStateManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.CompareTag("PlayerSword"))
+        if (other.gameObject.CompareTag("PlayerSword") || other.gameObject.CompareTag("PlayerMagic"))
         {
             ChangeState(EnemyState.Dying);
         }
