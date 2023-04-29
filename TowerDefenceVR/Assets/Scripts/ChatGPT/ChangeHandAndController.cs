@@ -27,4 +27,15 @@ public class ChangeHandAndController : MonoBehaviour
         }
         
     }
+
+    public void SwitchToHand()
+    {
+        if(controllers[0].activeSelf && controllers[1].activeSelf)
+        {
+            hands[0].SetActive(!hands[0].activeSelf);
+            hands[1].SetActive(!hands[1].activeSelf);
+            controllers[0].SetActive(!controllers[0].activeSelf);
+            controllers[1].SetActive(!controllers[1].activeSelf);
+        }
+    }
 }

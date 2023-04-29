@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GenerateMagic : MonoBehaviour
 {
@@ -10,10 +11,9 @@ public class GenerateMagic : MonoBehaviour
     [SerializeField, Tooltip("0:火, 1:水, 2:氷, 3:風, 4:雷, 5:土, 6:光, 7:闇")] GameObject[] magics = new GameObject[8];
     private string attributeKey;
     private string powerKey;
-    private string message;
     private GameObject selectedMagic;
     private int selectedMagicIndex = -1;
-    private Dictionary<int, GameObject> savedMagicDictionary =  new Dictionary< int, GameObject>();
+    private Dictionary<GameObject, GameObject> savedMagicDictionary =  new Dictionary<GameObject, GameObject>();
 
     Dictionary<string, Action<string>> actionDictionary = new Dictionary<string, Action<string>>();
 
@@ -294,7 +294,7 @@ public class GenerateMagic : MonoBehaviour
             }
 
             //魔法生成の際はコントローラーから手に変更する
-            changeHandAndController.Switch();
+            changeHandAndController.SwitchToHand();
             
             return selectedMagic;
         }
@@ -306,43 +306,46 @@ public class GenerateMagic : MonoBehaviour
         }
     }
 
-    public void GenerateSavedMagic(int buttonIndexCount)
+    public void GenerateSavedMagic()
     {
-        if(savedMagicDictionary.ContainsKey(buttonIndexCount) && selectedMagicIndex == -1)
+        GameObject clickedButton = EventSystem.current.currentSelectedGameObject;
+        if(savedMagicDictionary.ContainsKey(clickedButton) && selectedMagicIndex == -1)
         {
-            Instantiate(savedMagicDictionary[buttonIndexCount], magicParent.position, magicParent.rotation, magicParent);
+            Instantiate(savedMagicDictionary[clickedButton], magicParent.position, magicParent.rotation, magicParent);
         }
         else
         {
+            savedMagicDictionary.Remove(clickedButton);
+            
             switch(selectedMagicIndex)
             {
                 case 0:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[0]);
+                    savedMagicDictionary.Add(clickedButton, magics[0]);
                     break;
                 case 1:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[1]);
+                    savedMagicDictionary.Add(clickedButton, magics[1]);
                     break;
                 case 2:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[2]);
+                    savedMagicDictionary.Add(clickedButton, magics[2]);
                     break;
                 case 3:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[3]);
+                    savedMagicDictionary.Add(clickedButton, magics[3]);
                     break;
                 case 4:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[4]);
+                    savedMagicDictionary.Add(clickedButton, magics[4]);
                     break;
                 case 5:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[5]);
+                    savedMagicDictionary.Add(clickedButton, magics[5]);
                     break;
                 case 6:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[6]);
+                    savedMagicDictionary.Add(clickedButton, magics[6]);
                     break;
                 case 7:
-                    savedMagicDictionary.Add(buttonIndexCount, magics[7]);
+                    savedMagicDictionary.Add(clickedButton, magics[7]);
                     break;
             }
 
-            Instantiate(savedMagicDictionary[buttonIndexCount], magicParent.position, magicParent.rotation, magicParent);
+            Instantiate(savedMagicDictionary[clickedButton], magicParent.position, magicParent.rotation, magicParent);
             selectedMagicIndex = -1;
         }
     }

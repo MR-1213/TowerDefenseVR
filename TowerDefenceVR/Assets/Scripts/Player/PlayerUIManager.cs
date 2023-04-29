@@ -50,6 +50,17 @@ public class PlayerUIManager : MonoBehaviour
             }
         }
 
+        //Yボタンでファイアボールを生成するようにする(デバッグ用)
+        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+        {
+            //chat.DebugGenerateMagic1();
+        }
+
+        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        {
+            chat.DebugGenerateMagic2();
+        }
+
         if(keyboard != null)
         {
             magicInputField.text = keyboard.text;

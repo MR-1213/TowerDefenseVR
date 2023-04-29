@@ -49,6 +49,9 @@ public class TutorialManager : MonoBehaviour
             case "ClickedGenerateNewMagic":
                 StartCoroutine(ClickedGenerateNewMagicButton());
                 break;
+            case "ClickedGenerateButton":
+                StartCoroutine(ClickedGenerateButton());
+                break;
             case "GeneratedMagic":
                 StartCoroutine(GeneratedMagic());
                 break;
@@ -191,6 +194,23 @@ public class TutorialManager : MonoBehaviour
     IEnumerator ClickedGenerateNewMagicButton()
     {
         //イベント開始前にクリックされている場合は、クリックされていない状態にする
+        ClickedTrigger = false;
+        while(true)
+        {
+            if(ClickedTrigger)
+            {
+                ClickedTrigger = false;
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator ClickedGenerateButton()
+    {
         ClickedTrigger = false;
         while(true)
         {

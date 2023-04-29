@@ -43,6 +43,7 @@ public class TriggerManager : MonoBehaviour
         if(other.gameObject.CompareTag("Player") && gameObject.name == "TableWithSword")
         {
             tutorialManager.MovedTrigger = true;
+            gameObject.GetComponent<SphereCollider>().enabled = false;
         }
         //チュートリアル : プレイヤーが柵の外から出られないことを伝える表示を出す
         if(other.gameObject.CompareTag("Player") && gameObject.name == "FenceBarrier")

@@ -16,10 +16,10 @@ public class Chat : MonoBehaviour
     SearchMagicInformation searchMagicInformation;
     GenerateMagic generateMagic;
 
-    [SerializeField] private Button[] savedMagicButtons = new Button[4];
-    private TMP_Text[] magicTexts = new TMP_Text[4];
-    private int indexCount = 0;
-    private string newMagicName = "";
+    [SerializeField] private Button[] savedMagicButtons = new Button[4]; //保存された魔法を生成するボタン
+    private TMP_Text[] magicTexts = new TMP_Text[4]; //保存された魔法の名前を表示するテキスト(ボタンの子オブジェクト)
+    private int indexCount = 0; //ボタンのインデックス
+    private string newMagicName = ""; //新しく生成する魔法名
 
     //初期メッセージを定義
     List<OpenAIChatCompletionAPI.Message> context = new List<OpenAIChatCompletionAPI.Message>()
@@ -55,18 +55,40 @@ public class Chat : MonoBehaviour
             magicTexts[counter] = savedMagicButton.gameObject.GetComponentInChildren<TMP_Text>();
             counter++;
         }
+    }
 
+    /*
+    //デバッグ用
+    public void DebugGenerateMagic1()
+    {
         //新たな魔法の入力を受け付ける
-        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ライトニング" };
+        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ファイアボール" };
         context.Add(message);
         //魔法名を保存して入力フィールドを空にする
-        newMagicName = "ライトニング";
+        newMagicName = "ファイアボール";
         inputField.text = "";
         //エラーメッセージを空にする
         errorMessage.text = "";
         //ChatGPTとの通信準備開始
         StartCoroutine(ChatCompletionRequest());
     }
+
+    */
+
+    public void DebugGenerateMagic2()
+    {
+        //新たな魔法の入力を受け付ける
+        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ウォーターウェーブ" };
+        context.Add(message);
+        //魔法名を保存して入力フィールドを空にする
+        newMagicName = "ウォーターウェーブ";
+        inputField.text = "";
+        //エラーメッセージを空にする
+        errorMessage.text = "";
+        //ChatGPTとの通信準備開始
+        StartCoroutine(ChatCompletionRequest());
+    }
+    
 
     public void OnGenerateButtonClick()
     {
@@ -125,10 +147,12 @@ public class Chat : MonoBehaviour
         }
 
         //生成した魔法を保存する
-        //保存数が5個を超える場合は古いものから削除する
+        //保存数が5個を超える場合は古いものから入れ替える
         savedMagicButtons[indexCount].onClick.RemoveAllListeners();
-        savedMagicButtons[indexCount].onClick.AddListener(() => generateMagic.GenerateSavedMagic(indexCount));
+        savedMagicButtons[indexCount].onClick.AddListener(() => generateMagic.GenerateSavedMagic());
+        //ボタンのテキストに生成した魔法名を入力する
         magicTexts[indexCount].text = newMagicName;
+        //次のボタンのインデックスに変更する
         indexCount++;
         if(indexCount > 3)
         {
