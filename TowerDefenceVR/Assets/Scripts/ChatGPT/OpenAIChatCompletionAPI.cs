@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 
-// https://platform.openai.com/docs/api-reference/chat/create
+
+/// <summary>
+/// ChatGPTとの通信を行うクラス
+/// </summary>
 public class OpenAIChatCompletionAPI
 {
     const string API_URL = "https://api.openai.com/v1/chat/completions";

@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// ChatGPTの回答をGenerateMagic.csで扱いやすい形に変換するクラス
+/// </summary>
 public class SearchMagicInformation
 {
     private const string ATTRIBUTE = "属性:";

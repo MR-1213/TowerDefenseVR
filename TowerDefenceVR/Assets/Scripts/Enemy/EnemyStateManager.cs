@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using DG.Tweening;
 
+/// <summary>
+/// 敵の状態を管理するクラス
+/// </summary>
 public class EnemyStateManager : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
-    //[SerializeField] private AudioClip[] audioClips; //0:歩く音 1:攻撃音 2:死亡音
     private Animator animator;
     private NavMeshAgent navMeshAgent;
     private AudioSource audioSource;
+    private EnemyStatusManager statusManager;
+    private Slider enemyHPSlider;
 
     private enum EnemyState{
         Idle,
@@ -27,13 +32,25 @@ public class EnemyStateManager : MonoBehaviour
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         audioSource = GetComponent<AudioSource>();
+        enemyHPSlider = GetComponentInChildren<Slider>();
+
+        statusManager = new EnemyStatusManager(30.0f);
+        enemyHPSlider.minValue = 0.0f;
+        enemyHPSlider.maxValue = 30.0f;
+        enemyHPSlider.value = enemyHPSlider.maxValue;
     }
 
     private void OnTriggerEnter(Collider other) 
     {
         if (other.gameObject.CompareTag("PlayerSword"))
         {
-            ChangeState(EnemyState.Dying);
+            Debug.Log("PlayerSwordがヒットしました。");
+            statusManager.NormalDamage();
+            enemyHPSlider.DOValue(statusManager.HP, 0.5f);
+            if(statusManager.HP == 0)
+            {
+                ChangeState(EnemyState.Dying);
+            }
         }
     }
 
@@ -41,7 +58,13 @@ public class EnemyStateManager : MonoBehaviour
     {
         if(col.gameObject.CompareTag("PlayerMagic"))
         {
-            ChangeState(EnemyState.Dying);
+            Debug.Log("PlayerMagicがヒットしました。");
+            statusManager.NormalDamage();
+            enemyHPSlider.DOValue(statusManager.HP, 0.5f);
+            if(statusManager.HP == 0)
+            {
+                ChangeState(EnemyState.Dying);
+            }
         }
     }
 
@@ -122,8 +145,6 @@ public class EnemyStateManager : MonoBehaviour
 
                 if(stateTime > 6.0f)
                 {
-                    //audioSource.PlayOneShot(audioClips[2]);
-                    //DOVirtual.DelayedCall(3.0f, () => Destroy(this.gameObject), false);
                     Destroy(this.gameObject);
                 }
 

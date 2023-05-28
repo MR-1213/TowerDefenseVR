@@ -3,95 +3,81 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// プレイヤーに対して表示されるUIを管理するクラス
+/// </summary>
 public class PlayerUIManager : MonoBehaviour
 {
-    public TMP_Text generateText;
+    [Header("参照スクリプト")]
     [SerializeField] private Chat chat;
-    [SerializeField] private ChangeHandAndController changeHandAndController;
-    [SerializeField] private GameObject playerMagicsCanvas;
-    [SerializeField] private GameObject playerNewMagicCanvas;
+
+    [Header("UI共通")]
     [SerializeField] private GameObject mainCamera;
-    [SerializeField] private TMP_InputField magicInputField;
     [SerializeField] private LineRenderer lineRenderer;
-    private bool canvasEnable = false;
+
+    [Header("魔法生成UI関係")]
+    [SerializeField] private GameObject playerNewMagicCanvas; 
+    [SerializeField] private TMP_InputField magicInputField;
+    private bool newMagicCanvasEnable = false;
     private TouchScreenKeyboard keyboard;
+
+    [Header("生成済み魔法UI関係")]
+    [SerializeField] private TMP_Dropdown generatedMagicDropdown;
+    private bool generatedMagicCanvasEnable = false;
 
     private void Awake() 
     {
-        playerMagicsCanvas.SetActive(canvasEnable);
-        playerNewMagicCanvas.SetActive(canvasEnable);
+        playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
         lineRenderer.enabled = false;
     }
 
     private void Update() 
     {
-        //Xボタンを押したら魔法生成UIを表示・非表示を切り替える
-        if(OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
-        {
-            canvasEnable = !canvasEnable;
-            playerMagicsCanvas.SetActive(canvasEnable);
-            //手とコントローラーを切り替える
-            changeHandAndController.Switch();
-            //レーザーポインターの表示・非表示も切り替える
-            lineRenderer.enabled = canvasEnable;
-            if(mainCamera != null)
-            {
-                //カメラの向いている方向にUIを配置する
-                playerMagicsCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f;
-                playerNewMagicCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f - mainCamera.transform.up * 1.0f;
-
-                Vector3 lookPos1 = mainCamera.transform.position - playerMagicsCanvas.transform.position;
-                Vector3 lookPos2 = mainCamera.transform.position - playerNewMagicCanvas.transform.position;
-
-                playerMagicsCanvas.transform.rotation = Quaternion.LookRotation(lookPos1);
-                playerMagicsCanvas.transform.Rotate(Vector3.up, 180f, Space.Self);
-                playerNewMagicCanvas.transform.rotation = Quaternion.LookRotation(lookPos2);
-                playerNewMagicCanvas.transform.Rotate(Vector3.up, 180f, Space.Self);
-            }
-        }
-
-        //Yボタンでファイアボールを生成するようにする(デバッグ用)
-        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-        {
-            //chat.DebugGenerateMagic1();
-        }
-
-        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
-        {
-            chat.DebugGenerateMagic2();
-        }
-
+        //キーボードの入力をインプットフィールドに反映する
         if(keyboard != null)
         {
             magicInputField.text = keyboard.text;
         }
+
     }
 
-    public void OnNewMagicButton()
+    public void ChangeNewMagicCanvasEnable()
     {
-        playerMagicsCanvas.SetActive(false);
-        playerNewMagicCanvas.SetActive(true);
+        //魔法生成のUIの表示・非表示を切り替える
+        newMagicCanvasEnable = !newMagicCanvasEnable;
+        playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
 
-        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default);
+        //レーザーポインターの表示・非表示も切り替える
+        lineRenderer.enabled = newMagicCanvasEnable;
+        
+        if(mainCamera != null)
+        {
+            //カメラの向いている方向の少し下にUIを配置する
+            playerNewMagicCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f - mainCamera.transform.up * 1.0f;
+
+            Vector3 lookPos2 = mainCamera.transform.position - playerNewMagicCanvas.transform.position;
+
+            playerNewMagicCanvas.transform.rotation = Quaternion.LookRotation(lookPos2);
+            playerNewMagicCanvas.transform.Rotate(Vector3.up, 180f, Space.Self);
+        }
     }
 
     public void OnGenerateButton()
     {
-        changeHandAndController.SwitchToController();
         chat.OnGenerateButtonClick();
     }
 
     public void OnBackButton()
     {
         playerNewMagicCanvas.SetActive(false);
-        playerMagicsCanvas.SetActive(true);
-    }
-
-    public void OnEndButton()
-    {
-        playerMagicsCanvas.SetActive(false);
-        playerNewMagicCanvas.SetActive(false);
-        canvasEnable = false;
+        newMagicCanvasEnable = false;
         lineRenderer.enabled = false;
     }
+
+    public void ChangeGeneratedMagicCanvasEnable()
+    {
+        generatedMagicCanvasEnable = !generatedMagicCanvasEnable;
+        lineRenderer.enabled = generatedMagicCanvasEnable;
+    }
+    
 }

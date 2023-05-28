@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+/// <summary>
+/// チュートリアル中、オブジェクトを点滅させる際に使うクラス
+/// </summary>
 public class FlashingObject : MonoBehaviour
 {
     private Material flashingMaterial;

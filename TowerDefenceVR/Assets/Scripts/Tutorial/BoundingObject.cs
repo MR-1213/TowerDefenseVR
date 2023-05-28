@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+/// <summary>
+/// チュートリアル中、オブジェクトをバウンドさせる際に使うクラス
+/// </summary>
 public class BoundingObject : MonoBehaviour
 {
     private bool isBounding = false;

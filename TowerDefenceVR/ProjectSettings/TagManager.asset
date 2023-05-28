@@ -8,6 +8,8 @@ TagManager:
   - PlayerSword
   - Enemy
   - PlayerMagic
+  - PlayerHand
+  - FenceBarrier
   layers:
   - Default
   - TransparentFX

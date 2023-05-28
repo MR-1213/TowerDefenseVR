@@ -3,19 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
+/// <summary>
+/// ChatGPTからの回答をもとに魔法を生成するクラス
+/// </summary>
 public class GenerateMagic : MonoBehaviour
 {
-    [SerializeField] ChangeHandAndController changeHandAndController;
     [SerializeField] Transform magicParent;
     [SerializeField, Tooltip("0:火, 1:水, 2:氷, 3:風, 4:雷, 5:土, 6:光, 7:闇")] GameObject[] magics = new GameObject[8];
     private string attributeKey;
     private string powerKey;
     private GameObject selectedMagic;
     private int selectedMagicIndex = -1;
-    private Dictionary<GameObject, GameObject> savedMagicDictionary =  new Dictionary<GameObject, GameObject>();
+    private Dictionary<string, GameObject> savedMagicDictionary = new Dictionary<string, GameObject>();
 
-    Dictionary<string, Action<string>> actionDictionary = new Dictionary<string, Action<string>>();
+    Dictionary<string, Action<string>> actionDictionary;
 
     private void Start()
     {
@@ -30,7 +33,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -61,7 +64,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -92,7 +95,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -123,7 +126,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -154,7 +157,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -184,7 +187,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -215,7 +218,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -246,7 +249,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup)
+                    switch(powerGroup / 10)
                     {
                         case 0:
                         case 10:
@@ -292,10 +295,8 @@ public class GenerateMagic : MonoBehaviour
             {
                 return selectedMagic;
             }
-
-            //魔法生成の際はコントローラーから手に変更する
-            changeHandAndController.SwitchToHand();
             
+            //生成される魔法を返す
             return selectedMagic;
         }
         else
@@ -306,47 +307,21 @@ public class GenerateMagic : MonoBehaviour
         }
     }
 
-    public void GenerateSavedMagic()
+    public void SaveMagic(string magicName)
     {
-        GameObject clickedButton = EventSystem.current.currentSelectedGameObject;
-        if(savedMagicDictionary.ContainsKey(clickedButton) && selectedMagicIndex == -1)
+        if(!savedMagicDictionary.ContainsKey(magicName))
         {
-            Instantiate(savedMagicDictionary[clickedButton], magicParent.position, magicParent.rotation, magicParent);
+            savedMagicDictionary.Add(magicName, magics[selectedMagicIndex]);
         }
-        else
-        {
-            savedMagicDictionary.Remove(clickedButton);
-            
-            switch(selectedMagicIndex)
-            {
-                case 0:
-                    savedMagicDictionary.Add(clickedButton, magics[0]);
-                    break;
-                case 1:
-                    savedMagicDictionary.Add(clickedButton, magics[1]);
-                    break;
-                case 2:
-                    savedMagicDictionary.Add(clickedButton, magics[2]);
-                    break;
-                case 3:
-                    savedMagicDictionary.Add(clickedButton, magics[3]);
-                    break;
-                case 4:
-                    savedMagicDictionary.Add(clickedButton, magics[4]);
-                    break;
-                case 5:
-                    savedMagicDictionary.Add(clickedButton, magics[5]);
-                    break;
-                case 6:
-                    savedMagicDictionary.Add(clickedButton, magics[6]);
-                    break;
-                case 7:
-                    savedMagicDictionary.Add(clickedButton, magics[7]);
-                    break;
-            }
+    }
 
-            Instantiate(savedMagicDictionary[clickedButton], magicParent.position, magicParent.rotation, magicParent);
-            selectedMagicIndex = -1;
+    public void GenerateSavedMagic(TMP_Dropdown dropdown)
+    {
+        string magicName = dropdown.options[dropdown.value].text;
+
+        if(savedMagicDictionary.ContainsKey(magicName))
+        {
+            Instantiate(savedMagicDictionary[magicName], magicParent.position, magicParent.rotation, magicParent);
         }
     }
 }

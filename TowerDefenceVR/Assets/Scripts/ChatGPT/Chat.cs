@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// ChatGPTの処理の概要を行うクラス
+/// </summary>
 public class Chat : MonoBehaviour
 {
     [SerializeField] TutorialManager tutorialManager;
@@ -16,9 +19,8 @@ public class Chat : MonoBehaviour
     SearchMagicInformation searchMagicInformation;
     GenerateMagic generateMagic;
 
-    [SerializeField] private Button[] savedMagicButtons = new Button[4]; //保存された魔法を生成するボタン
-    private TMP_Text[] magicTexts = new TMP_Text[4]; //保存された魔法の名前を表示するテキスト(ボタンの子オブジェクト)
-    private int indexCount = 0; //ボタンのインデックス
+    [SerializeField] private TMP_Dropdown generatedMagicDropdown; //生成済み魔法のドロップダウン
+    private List<string> generatedMagicList = new List<string>(); //生成済み魔法のリスト
     private string newMagicName = ""; //新しく生成する魔法名
 
     //初期メッセージを定義
@@ -48,13 +50,6 @@ public class Chat : MonoBehaviour
     private void Start() 
     {
         generateMagic = GetComponent<GenerateMagic>();
-
-        int counter = 0;
-        foreach(Button savedMagicButton in savedMagicButtons)
-        {
-            magicTexts[counter] = savedMagicButton.gameObject.GetComponentInChildren<TMP_Text>();
-            counter++;
-        }
     }
 
     /*
@@ -73,7 +68,7 @@ public class Chat : MonoBehaviour
         StartCoroutine(ChatCompletionRequest());
     }
 
-    */
+    
 
     public void DebugGenerateMagic2()
     {
@@ -88,7 +83,7 @@ public class Chat : MonoBehaviour
         //ChatGPTとの通信準備開始
         StartCoroutine(ChatCompletionRequest());
     }
-    
+    */
 
     public void OnGenerateButtonClick()
     {
@@ -123,7 +118,7 @@ public class Chat : MonoBehaviour
         //レスポンスがエラーであった場合はエラー処理
         if (request.IsError)
         {
-            GenerateErrorMessage();
+            GenerateErrorMessage(1);
             yield break;
         }
         //レスポンスのリストの中から最も新しいレスポンス内容を取得する
@@ -134,7 +129,7 @@ public class Chat : MonoBehaviour
         string magicInfoKey = searchMagicInformation.GetMagicInfo();
         if(string.IsNullOrEmpty(magicInfoKey))
         {
-            GenerateErrorMessage();
+            GenerateErrorMessage(2);
             yield break;
         }
 
@@ -142,22 +137,17 @@ public class Chat : MonoBehaviour
         GameObject magic = generateMagic.Generate(magicInfoKey);
         if(magic == null)
         {
-            GenerateErrorMessage();
+            GenerateErrorMessage(3);
             yield break;
         }
-
+        
         //生成した魔法を保存する
-        //保存数が5個を超える場合は古いものから入れ替える
-        savedMagicButtons[indexCount].onClick.RemoveAllListeners();
-        savedMagicButtons[indexCount].onClick.AddListener(() => generateMagic.GenerateSavedMagic());
-        //ボタンのテキストに生成した魔法名を入力する
-        magicTexts[indexCount].text = newMagicName;
-        //次のボタンのインデックスに変更する
-        indexCount++;
-        if(indexCount > 3)
-        {
-            indexCount = 0;
-        }
+        generateMagic.SaveMagic(newMagicName);
+
+        //生成済み魔法のドロップダウンに追加する
+        generatedMagicList.Add(newMagicName);
+        generatedMagicDropdown.ClearOptions();
+        generatedMagicDropdown.AddOptions(generatedMagicList);
 
         //1フレーム中断して再開(非同期処理)
         yield return null;
@@ -168,9 +158,9 @@ public class Chat : MonoBehaviour
         generateButton.interactable = true;
     }
 
-    private void GenerateErrorMessage()
+    private void GenerateErrorMessage(int errorCode)
     {
-        errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください";
+        errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください" + "(" + errorCode + ")";
         generateButton.interactable = true;
     }
 }

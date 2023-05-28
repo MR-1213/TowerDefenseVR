@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
+/// <summary>
+/// チュートリアルのタイムライン進行を管理するクラス
+/// </summary>
 public class TutorialManager : MonoBehaviour
 {
     private PlayableDirector playableDirector;
     private float touchStickTime = 0.0f;
-    private float rightStickThreshold = 8.0f;
-    private float leftStickThreshold = 5.0f;
+    private float rightStickThreshold = 5.0f;
+    private float leftStickThreshold = 3.0f;
 
     public bool MovedTrigger { get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
@@ -43,11 +46,8 @@ public class TutorialManager : MonoBehaviour
             case "KilledEnemy":
                 StartCoroutine(KilledEnemy());
                 break;
-            case "ClickedXButton":
-                StartCoroutine(ClickedXButton());
-                break;
-            case "ClickedGenerateNewMagic":
-                StartCoroutine(ClickedGenerateNewMagicButton());
+            case "ClickedYButton":
+                StartCoroutine(ClickedYButton());
                 break;
             case "ClickedGenerateButton":
                 StartCoroutine(ClickedGenerateButton());
@@ -92,10 +92,8 @@ public class TutorialManager : MonoBehaviour
         touchStickTime = 0.0f;
         while(true)
         {
-            if( OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp, OVRInput.Controller.LTouch) ||
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight, OVRInput.Controller.LTouch) ||
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown, OVRInput.Controller.LTouch) ||
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft, OVRInput.Controller.LTouch))
+            if(OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickRight, OVRInput.Controller.LTouch) ||
+                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickLeft, OVRInput.Controller.LTouch))
             {
                 touchStickTime += Time.deltaTime;
             }
@@ -176,30 +174,12 @@ public class TutorialManager : MonoBehaviour
         ResumeTimeline();
     }
 
-    IEnumerator ClickedXButton()
+    IEnumerator ClickedYButton()
     {
         while(true)
         {
-            if(OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+            if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))
             {
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator ClickedGenerateNewMagicButton()
-    {
-        //イベント開始前にクリックされている場合は、クリックされていない状態にする
-        ClickedTrigger = false;
-        while(true)
-        {
-            if(ClickedTrigger)
-            {
-                ClickedTrigger = false;
                 break;
             }
 
