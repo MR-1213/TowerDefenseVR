@@ -9,6 +9,7 @@ using DG.Tweening;
 public class PlayerControllerManager : MonoBehaviour
 {
     [SerializeField] private PlayerUIManager playerUIManager;
+    [SerializeField] private Chat chat;
     private PlayerWeaponManager playerWeaponManager;
 
     [SerializeField] private Transform underWristPos; //手首の下の位置
@@ -58,7 +59,7 @@ public class PlayerControllerManager : MonoBehaviour
             //手首の下が地面を向いているかどうか
             if(underWristHit.collider.gameObject.CompareTag("Ground"))
             {
-                foreach(RaycastHit backOfTheHandHit in Physics.RaycastAll(frontOfTheHandPos.position, -frontOfTheHandPos.right, 1.5f))
+                foreach(RaycastHit backOfTheHandHit in Physics.RaycastAll(frontOfTheHandPos.position, -frontOfTheHandPos.forward, 1.5f))
                 {
                     //手のひらの後ろ側にプレイヤーがいるかどうか
                     if(backOfTheHandHit.collider.gameObject.CompareTag("Player"))
@@ -95,6 +96,10 @@ public class PlayerControllerManager : MonoBehaviour
             }
         }
 
-
+        //デバッグ用 : Xボタンで魔法生成
+        if(OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        {
+            chat.DebugGenerateMagic1();
+        }
     }
 }

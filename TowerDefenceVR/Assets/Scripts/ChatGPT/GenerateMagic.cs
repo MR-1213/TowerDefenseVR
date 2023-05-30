@@ -33,7 +33,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:
@@ -64,7 +64,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:
@@ -95,7 +95,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:
@@ -157,7 +157,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:
@@ -187,7 +187,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:
@@ -218,7 +218,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:
@@ -249,7 +249,7 @@ public class GenerateMagic : MonoBehaviour
                 }
                 else
                 {
-                    switch(powerGroup / 10)
+                    switch(powerGroup)
                     {
                         case 0:
                         case 10:

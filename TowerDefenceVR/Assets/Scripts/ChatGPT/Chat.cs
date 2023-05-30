@@ -52,7 +52,7 @@ public class Chat : MonoBehaviour
         generateMagic = GetComponent<GenerateMagic>();
     }
 
-    /*
+    
     //デバッグ用
     public void DebugGenerateMagic1()
     {
@@ -69,7 +69,7 @@ public class Chat : MonoBehaviour
     }
 
     
-
+    /*
     public void DebugGenerateMagic2()
     {
         //新たな魔法の入力を受け付ける
@@ -152,8 +152,12 @@ public class Chat : MonoBehaviour
         //1フレーム中断して再開(非同期処理)
         yield return null;
 
-        //チュートリアル再開
-        tutorialManager.GeneratedTrigger = true;
+        //詠唱中の音声が終了したらチュートリアル再開
+        if(tutorialManager.IsEndOfCastingVoice)
+        {
+            tutorialManager.GeneratedTrigger = true;
+        }
+        
         //新たな魔法の生成を受け付けられるようにする
         generateButton.interactable = true;
     }

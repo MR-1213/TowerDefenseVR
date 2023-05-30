@@ -10,12 +10,14 @@ public class TutorialManager : MonoBehaviour
 {
     private PlayableDirector playableDirector;
     private float touchStickTime = 0.0f;
+    private int touchStickCount = 0;
     private float rightStickThreshold = 5.0f;
-    private float leftStickThreshold = 3.0f;
+    private int leftStickThreshold = 5;
 
     public bool MovedTrigger { get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
     public bool ClickedTrigger { get; set; } = false;
+    public bool IsEndOfCastingVoice { get; set; } = false;
     public bool GeneratedTrigger { get; set; } = false;
 
     private void Start()
@@ -52,7 +54,13 @@ public class TutorialManager : MonoBehaviour
             case "ClickedGenerateButton":
                 StartCoroutine(ClickedGenerateButton());
                 break;
+            case "EndOfCastingVoice":
+                IsEndOfCastingVoice = true;
+                break;
             case "GeneratedMagic":
+                StartCoroutine(GeneratedMagic());
+                break;
+            case "GenerateMagicAgain":
                 StartCoroutine(GeneratedMagic());
                 break;
         }
@@ -89,16 +97,16 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator WaitAndResumeForLeftThick()
     {
-        touchStickTime = 0.0f;
+        touchStickCount = 0;
         while(true)
         {
             if(OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickRight, OVRInput.Controller.LTouch) ||
                 OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickLeft, OVRInput.Controller.LTouch))
             {
-                touchStickTime += Time.deltaTime;
+                touchStickCount++;
             }
 
-            if(touchStickTime > leftStickThreshold)
+            if(touchStickCount > leftStickThreshold)
             {
                 break;
             }
