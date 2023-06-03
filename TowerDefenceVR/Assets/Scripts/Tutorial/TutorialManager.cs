@@ -2,23 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 /// <summary>
 /// チュートリアルのタイムライン進行を管理するクラス
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
+
+    [SerializeField] private Button generateButton;
     private PlayableDirector playableDirector;
     private float touchStickTime = 0.0f;
     private int touchStickCount = 0;
     private float rightStickThreshold = 5.0f;
     private int leftStickThreshold = 5;
 
+    public bool IsTutorialFlag { get; private set;}
     public bool MovedTrigger { get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
     public bool ClickedTrigger { get; set; } = false;
     public bool IsEndOfCastingVoice { get; set; } = false;
-    public bool GeneratedTrigger { get; set; } = false;
+    public bool GeneratedTrigger { get; set; } = true;
 
     private void Start()
     {
@@ -56,6 +60,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case "EndOfCastingVoice":
                 IsEndOfCastingVoice = true;
+                ResumeTimeline();
                 break;
             case "GeneratedMagic":
                 StartCoroutine(GeneratedMagic());
@@ -69,6 +74,11 @@ public class TutorialManager : MonoBehaviour
     public void ResumeTimeline()
     {
         playableDirector.Resume();
+    }
+
+    public void IsTutorial()
+    {
+        IsTutorialFlag = true;
     }
 
     IEnumerator WaitAndResumeForRightThick()
@@ -199,6 +209,7 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator ClickedGenerateButton()
     {
+        generateButton.interactable = true;
         ClickedTrigger = false;
         while(true)
         {

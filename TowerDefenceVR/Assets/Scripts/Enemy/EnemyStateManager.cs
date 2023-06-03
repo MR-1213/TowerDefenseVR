@@ -48,7 +48,7 @@ public class EnemyStateManager : MonoBehaviour
             statusManager.NormalDamage();
             enemyHPSlider.DOValue(statusManager.HP, 0.5f);
             OVRInput.SetControllerVibration(0f, 0.5f, OVRInput.Controller.RTouch);
-            DOVirtual.DelayedCall(1.5f, () => OVRInput.SetControllerVibration(0f, 0f, OVRInput.Controller.RTouch));
+            DOVirtual.DelayedCall(1.0f, () => OVRInput.SetControllerVibration(0f, 0f, OVRInput.Controller.RTouch));
             if(statusManager.HP == 0)
             {
                 ChangeState(EnemyState.Dying);

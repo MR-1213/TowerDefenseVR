@@ -50,12 +50,17 @@ public class Chat : MonoBehaviour
     private void Start() 
     {
         generateMagic = GetComponent<GenerateMagic>();
+
+        generateButton.interactable = false;
+
+        generatedMagicList.Add("攻撃魔法");
     }
 
     
     //デバッグ用
     public void DebugGenerateMagic1()
     {
+        tutorialManager.ClickedTrigger = true;
         //新たな魔法の入力を受け付ける
         var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ファイアボール" };
         context.Add(message);
@@ -134,6 +139,8 @@ public class Chat : MonoBehaviour
         }
 
         //魔法の生成をする
+        //チュートリアル中では詠唱中の音声が終了したら生成する
+        if(tutorialManager.IsTutorialFlag) yield return new WaitUntil(() => tutorialManager.IsEndOfCastingVoice == true);
         GameObject magic = generateMagic.Generate(magicInfoKey);
         if(magic == null)
         {
@@ -149,14 +156,11 @@ public class Chat : MonoBehaviour
         generatedMagicDropdown.ClearOptions();
         generatedMagicDropdown.AddOptions(generatedMagicList);
 
-        //1フレーム中断して再開(非同期処理)
-        yield return null;
+        //(非同期処理)
+        yield return new WaitUntil(() => tutorialManager.GeneratedTrigger == false);
 
-        //詠唱中の音声が終了したらチュートリアル再開
-        if(tutorialManager.IsEndOfCastingVoice)
-        {
-            tutorialManager.GeneratedTrigger = true;
-        }
+        //魔法生成したらチュートリアルを再開する
+        if(tutorialManager.IsTutorialFlag) tutorialManager.GeneratedTrigger = true;
         
         //新たな魔法の生成を受け付けられるようにする
         generateButton.interactable = true;

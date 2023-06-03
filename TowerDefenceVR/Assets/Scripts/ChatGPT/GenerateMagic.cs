@@ -317,11 +317,18 @@ public class GenerateMagic : MonoBehaviour
 
     public void GenerateSavedMagic(TMP_Dropdown dropdown)
     {
+        if(dropdown.value == 0)
+        {
+            return;
+        }
+        
         string magicName = dropdown.options[dropdown.value].text;
 
         if(savedMagicDictionary.ContainsKey(magicName))
         {
             Instantiate(savedMagicDictionary[magicName], magicParent.position, magicParent.rotation, magicParent);
         }
+
+        dropdown.value = 0;
     }
 }

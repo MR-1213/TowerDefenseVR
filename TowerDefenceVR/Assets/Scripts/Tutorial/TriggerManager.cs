@@ -9,7 +9,6 @@ public class TriggerManager : MonoBehaviour
     private TutorialManager tutorialManager;
     private PlayerWeaponManager playerWeaponManager;
     private PlayerControllerManager playerControllerManager;
-    private Transform swordRespawnPos;
     
     private Vector3 respawnPosition; //剣を落とした時に戻すリスポーン位置
 
@@ -26,7 +25,6 @@ public class TriggerManager : MonoBehaviour
         tutorialManager = GameObject.Find("TutorialExplanationManager").GetComponent<TutorialManager>();
         playerWeaponManager = GameObject.Find("OVRPlayerController").GetComponent<PlayerWeaponManager>();
         playerControllerManager = GameObject.Find("OVRPlayerController").GetComponent<PlayerControllerManager>();
-        swordRespawnPos = GameObject.Find("SwordRespawnPoint").transform;
 
         //HouseBarrierオブジェクトの場合はRendererとCanvasGroupを取得する
         if(gameObject.name == "HouseBarrier" || gameObject.name == "FenceBarrier")
@@ -75,8 +73,7 @@ public class TriggerManager : MonoBehaviour
         //チュートリアル : 剣を落としたことを検知し、剣を元の位置に戻す
         if(other.gameObject.CompareTag("Ground") && gameObject.CompareTag("PlayerSword"))
         {
-            swordRigidbody.velocity = Vector3.zero;
-            transform.parent.gameObject.transform.position = swordRespawnPos.position;
+            Destroy(gameObject.transform.parent.gameObject);
             playerControllerManager.isGrabWeapon = false;
             playerControllerManager.grabWeapon = null;
         }

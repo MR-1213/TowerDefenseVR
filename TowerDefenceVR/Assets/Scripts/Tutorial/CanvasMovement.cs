@@ -33,7 +33,7 @@ public class CanvasMovement : MonoBehaviour
         nextCanvasPositionList.RemoveAt(0);
         counter++;
 
-        if(counter == 3)
+        if(counter == 3 || counter == 4)
         {
             MoveFrontOfPlayer(nextPos);
         }
@@ -45,7 +45,7 @@ public class CanvasMovement : MonoBehaviour
 
     private void MoveFrontOfPlayer(Transform nextPos)
     {
-        //プレイヤーの前に移動させる
+        //プレイヤーの前にキャンバスを移動させる
         nextPos.position = playerPos.position + playerPos.forward * 3.0f;
         if(nextPos.position.y < 2.0f)
         {
