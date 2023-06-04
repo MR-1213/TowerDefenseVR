@@ -68,6 +68,12 @@ public class TutorialManager : MonoBehaviour
             case "GenerateMagicAgain":
                 StartCoroutine(GeneratedMagic());
                 break;
+            case "GettingCloseMultipleEnemies":
+                StartCoroutine(GettingCloseMultipleEnemies());
+                break;
+            case "KilledMultiEnemies":
+                StartCoroutine(KilledMultiEnemies());
+                break;
         }
     }
 
@@ -233,6 +239,38 @@ public class TutorialManager : MonoBehaviour
             if(GeneratedTrigger)
             {
                 GeneratedTrigger = false;
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator KilledMultiEnemies()
+    {
+        while(true)
+        {
+            if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        ResumeTimeline();
+    }
+
+    IEnumerator GettingCloseMultipleEnemies()
+    {
+        MovedTrigger = false;
+        while(true)
+        {
+            if(MovedTrigger)
+            {
+                MovedTrigger = false;
                 break;
             }
 

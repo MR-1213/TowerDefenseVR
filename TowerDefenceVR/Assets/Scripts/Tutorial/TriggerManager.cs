@@ -27,7 +27,7 @@ public class TriggerManager : MonoBehaviour
         playerControllerManager = GameObject.Find("OVRPlayerController").GetComponent<PlayerControllerManager>();
 
         //HouseBarrierオブジェクトの場合はRendererとCanvasGroupを取得する
-        if(gameObject.name == "HouseBarrier" || gameObject.name == "FenceBarrier")
+        if(gameObject.name == "HouseBarrier" || gameObject.CompareTag("FenceBarrier"))
         {
             barrierRenderer = gameObject.GetComponent<Renderer>();
             canvasGroup = gameObject.GetComponentInChildren<CanvasGroup>();
@@ -83,37 +83,13 @@ public class TriggerManager : MonoBehaviour
         {
             tutorialManager.MovedTrigger = true;
         }
-    }
 
-    /*
-    private void OnTriggerStay(Collider other) 
-    {
-        //チュートリアル : 剣を掴んでいることを検知する
-        if(other.gameObject.CompareTag("PlayerHand") && gameObject.CompareTag("PlayerSword"))
+        //チュートリアル : 荷馬車に近づいたことを検知する
+        if(other.gameObject.CompareTag("Player") && gameObject.name == "GettingCloseMultipleMonsters")
         {
-            if(OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) &&
-               OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
-            {
-                //isKinematicがtrueの場合はfalseにする
-                if(swordRigidbody.isKinematic)
-                {
-                    Debug.Log("isKinematicがtrueのためfalseにします");
-                    swordRigidbody.isKinematic = false;
-                }
-
-                grabbingTime += Time.deltaTime;
-                if(grabbingTime > 2.0f)
-                {
-                    tutorialManager.GrabbedTrigger = true;
-                    playerWeaponManager.AddWeapon(gameObject.transform.parent.gameObject);
-
-                    playerControllerManager.isGrabWeapon = true;
-                    playerControllerManager.grabWeapon = gameObject.transform.parent.gameObject;
-                }
-            }
+            tutorialManager.MovedTrigger = true;
         }
     }
-    */
 
     private void OnTriggerExit(Collider other) 
     {
