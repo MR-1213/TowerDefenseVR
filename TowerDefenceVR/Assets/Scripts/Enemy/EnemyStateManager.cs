@@ -53,12 +53,14 @@ public class EnemyStateManager : MonoBehaviour
         Idle,
         Chase,
         Attack,
+        AttackIdle,
         Dying,
     }
     private EnemyState currentState = EnemyState.Idle;
     private bool stateEnter;
     private float stateTime;
     private Tween attackTween;
+    private Attack_MazeCallback attackCallback;
 
     private void Start() 
     {
@@ -74,6 +76,7 @@ public class EnemyStateManager : MonoBehaviour
         }
         else if(enemyType == EnemyType.MagicEnemy)
         {
+            attackCallback = animator.GetBehaviour<Attack_MazeCallback>();
             chaseDistanceThreshold = 15.0f;
             attackDistanceThreshold = 10.0f;
             switch(magicElement)
@@ -174,6 +177,14 @@ public class EnemyStateManager : MonoBehaviour
     private void Update() 
     {
         stateTime += Time.deltaTime;
+        if(enemyType == EnemyType.MagicEnemy)
+        {
+            if(attackCallback.isGenerateTime)
+            {
+                attackCallback.isGenerateTime = false;
+                Instantiate(selectedMagic, handTransform.position, handTransform.rotation);
+            }
+        }
 
         switch(currentState)
         {
@@ -230,6 +241,24 @@ public class EnemyStateManager : MonoBehaviour
                     return;
                 }
 
+                if(enemyType == EnemyType.MagicEnemy)
+                {
+                    ChangeState(EnemyState.AttackIdle);
+                }
+                return;
+            }
+
+            case EnemyState.AttackIdle:
+            {
+                if(stateTime > 5.0f)
+                {
+                    Vector3 playerDirection = playerTransform.position - transform.position;
+                    playerDirection.y = 0;
+                    transform.rotation = Quaternion.LookRotation(playerDirection);
+                    ChangeState(EnemyState.Attack);
+                    return;
+                }
+
                 return;
             }
 
@@ -272,10 +301,6 @@ public class EnemyStateManager : MonoBehaviour
             case EnemyType.MagicEnemy:
             {
                 animator.SetTrigger("AttackTrigger");
-                attackTween = DOVirtual.DelayedCall(2.0f, () => {
-                    Instantiate(selectedMagic, handTransform.position, handTransform.rotation);
-                })
-                .SetLoops(-1, LoopType.Restart);
                 break;
             }
         }

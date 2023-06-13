@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// チュートリアル中、オブジェクトを点滅させる際に使うクラス
@@ -13,6 +14,11 @@ public class FlashingObject : MonoBehaviour
     private void Start() 
     {
         flashingMaterial = GetComponent<Renderer>().material;
+
+        if(SceneManager.GetActiveScene().name == "Title")
+        {
+            Flash();
+        }
     }
     
     public void Flash()

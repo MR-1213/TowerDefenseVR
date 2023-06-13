@@ -49,7 +49,8 @@ public class HS_ProjectileMover : MonoBehaviour
     //https ://docs.unity3d.com/ScriptReference/Rigidbody.OnCollisionEnter.html
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Player")) return;
+        if(collision.gameObject.CompareTag("Player") && gameObject.CompareTag("PlayerMagic")) return;
+        
         //Lock all axes movement and rotation
         rb.constraints = RigidbodyConstraints.FreezeAll;
         speed = 0;
