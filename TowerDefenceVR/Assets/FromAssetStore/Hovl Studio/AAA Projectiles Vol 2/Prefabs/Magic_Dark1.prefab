@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 108176094184806404}
   - component: {fileID: 54347867007870338}
   - component: {fileID: 135713622178651324}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Magic_Dark1
   m_TagString: PlayerMagic
   m_Icon: {fileID: 0}

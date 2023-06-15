@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 108346806523693900}
   - component: {fileID: 54071876843268058}
   - component: {fileID: 135591627764625104}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Magic_Wind1
   m_TagString: PlayerMagic
   m_Icon: {fileID: 0}

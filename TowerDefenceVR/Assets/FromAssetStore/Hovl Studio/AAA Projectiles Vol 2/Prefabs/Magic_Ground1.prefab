@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 108874886764331828}
   - component: {fileID: 54785160050736224}
   - component: {fileID: 135257664758760022}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Magic_Ground1
   m_TagString: PlayerMagic
   m_Icon: {fileID: 0}

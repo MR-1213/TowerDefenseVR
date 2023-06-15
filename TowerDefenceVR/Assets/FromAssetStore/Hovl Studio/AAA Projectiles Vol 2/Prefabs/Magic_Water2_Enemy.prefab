@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 108950823119357486}
   - component: {fileID: 54530307865729164}
   - component: {fileID: 135664649076355494}
-  m_Layer: 9
-  m_Name: Magic_Water2
+  m_Layer: 7
+  m_Name: Magic_Water2_Enemy
   m_TagString: PlayerMagic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5009,7 +5009,7 @@ GameObject:
   - component: {fileID: 4485841805693622}
   - component: {fileID: 198682728377463958}
   - component: {fileID: 199569994304127986}
-  m_Layer: 9
+  m_Layer: 7
   m_Name: Drop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9842,7 +9842,7 @@ GameObject:
   - component: {fileID: 4274804163080188}
   - component: {fileID: 198338959649452208}
   - component: {fileID: 199870305160396900}
-  m_Layer: 9
+  m_Layer: 7
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}

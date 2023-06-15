@@ -18,7 +18,7 @@ public class TriggerManager : MonoBehaviour
     private Rigidbody swordRigidbody; //SwordオブジェクトのRigidbody
 
     private float grabbingTime = 0f;
-    private bool isInProcess = false;
+    public bool isInProcess { get; set; } = true;
 
     private void Start() 
     {

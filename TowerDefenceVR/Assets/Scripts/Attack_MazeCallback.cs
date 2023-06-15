@@ -23,7 +23,6 @@ public class Attack_MazeCallback : StateMachineBehaviour
             var stateInformation = animator.GetCurrentAnimatorStateInfo(0);
             
             var currentAnimTime = clipInformation.clip.length * stateInformation.normalizedTime;
-            Debug.Log(currentAnimTime);
 
             if(currentAnimTime > 1.5f && isNewAnimState)
             {

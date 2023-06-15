@@ -11,6 +11,7 @@ public class TutorialManager : MonoBehaviour
 {
 
     [SerializeField] private Button generateButton;
+    [SerializeField] private TriggerManager triggerManager;
     private PlayableDirector playableDirector;
     private float touchStickTime = 0.0f;
     private int touchStickCount = 0;
@@ -152,6 +153,7 @@ public class TutorialManager : MonoBehaviour
     IEnumerator GrabbedSword()
     {
         GrabbedTrigger = false;
+        triggerManager.isInProcess = false;
         while(true)
         {
             if(GrabbedTrigger)
