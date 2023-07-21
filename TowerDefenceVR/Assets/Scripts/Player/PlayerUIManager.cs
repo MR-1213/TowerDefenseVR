@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Banzan.Lib.Utility;
 
 /// <summary>
 /// プレイヤーに対して表示されるUIを管理するクラス

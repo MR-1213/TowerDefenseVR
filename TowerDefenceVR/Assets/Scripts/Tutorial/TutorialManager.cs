@@ -1,22 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
+using Banzan.Lib.Utility;
 
 /// <summary>
 /// チュートリアルのタイムライン進行を管理するクラス
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
+    public enum TutorialState
+    {
+        HowToMove,
+        HowToGrab
+    }
 
-    [SerializeField] private Button generateButton;
-    [SerializeField] private TriggerManager triggerManager;
+    //[SerializeField] private Button generateButton;
+    //[SerializeField] private TriggerManager triggerManager;
     private PlayableDirector playableDirector;
-    private float touchStickTime = 0.0f;
-    private int touchStickCount = 0;
-    private float rightStickThreshold = 5.0f;
-    private int leftStickThreshold = 5;
+    //private float touchStickTime = 0.0f;
+    //private int touchStickCount = 0;
+    //private float rightStickThreshold = 5.0f;
+    //private int leftStickThreshold = 5;
+
+    public bool OKButtonClicked {private get; set; } = false;
 
     public bool IsTutorialFlag { get; private set;}
     public bool MovedTrigger { get; set; } = false;
@@ -30,59 +39,33 @@ public class TutorialManager : MonoBehaviour
         playableDirector = GetComponent<PlayableDirector>();
     }
 
-    public void PauseTimeline(string targetName)
+    public void PauseTimeline(int stateNum)
     {
         playableDirector.Pause();
-        switch(targetName)
+        switch(stateNum)
         {
-            case "RightThumbstick":
-                StartCoroutine(WaitAndResumeForRightThick());
+            case 0:
+                StartCoroutine(HowToMove());
                 break;
-            case "LeftThumbstick":
-                StartCoroutine(WaitAndResumeForLeftThick());
-                break;
-            case "MoveToSwordPoint":
-                StartCoroutine(MovedToSwordPoint());
-                break;
-            case "GrabbedSword":
-                StartCoroutine(GrabbedSword());
-                break;
-            case "MoveToEnemyPoint":
-                StartCoroutine(MovedToEnemyPoint());
-                break;
-            case "KilledEnemy":
-                StartCoroutine(KilledEnemy());
-                break;
-            case "ClickedYButton":
-                StartCoroutine(ClickedYButton());
-                break;
-            case "ClickedGenerateButton":
-                StartCoroutine(ClickedGenerateButton());
-                break;
-            case "EndOfCastingVoice":
-                IsEndOfCastingVoice = true;
-                ResumeTimeline();
-                break;
-            case "GeneratedMagic":
-                StartCoroutine(GeneratedMagic());
-                break;
-            case "GenerateMagicAgain":
-                StartCoroutine(GeneratedMagic());
-                break;
-            case "GettingCloseMultipleEnemies":
-                StartCoroutine(GettingCloseMultipleEnemies());
-                break;
-            case "KilledMultiEnemies":
-                StartCoroutine(KilledMultiEnemies());
+            case 1:
                 break;
         }
     }
 
-    public void ResumeTimeline()
+    private void ResumeTimeline()
     {
         playableDirector.Resume();
     }
 
+    private IEnumerator HowToMove()
+    {
+        yield return new WaitUntil(() => OKButtonClicked);
+        OKButtonClicked = false;
+
+        ResumeTimeline();
+    }
+
+    /*
     public void IsTutorial()
     {
         IsTutorialFlag = true;
@@ -281,4 +264,5 @@ public class TutorialManager : MonoBehaviour
 
         ResumeTimeline();
     }
+    */
 }

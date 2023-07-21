@@ -31,6 +31,9 @@ public class OVRScreenFade : MonoBehaviour
 	[Tooltip("Fade duration")]
 	public float fadeTime = 2.0f;
 
+	[Tooltip("Fade Wait Time")]
+	public float fadeWaitTime = 5.0f;
+
 	[Tooltip("Screen color at maximum fade")]
 	public Color fadeColor = new Color(0.01f, 0.01f, 0.01f, 1.0f);
 
@@ -68,16 +71,16 @@ public class OVRScreenFade : MonoBehaviour
 
 		// create the fade material
 		fadeMaterial = new Material(Shader.Find("Oculus/Unlit Transparent Color"));
-		fadeMesh = gameObject.AddComponent<MeshFilter>();
-		fadeRenderer = gameObject.AddComponent<MeshRenderer>();
+		fadeMesh = gameObject.GetComponent<MeshFilter>();
+		fadeRenderer = gameObject.GetComponent<MeshRenderer>();
 
 		var mesh = new Mesh();
 		fadeMesh.mesh = mesh;
 
 		Vector3[] vertices = new Vector3[4];
 
-		float width = 2f;
-		float height = 2f;
+		float width = 3f;
+		float height = 3f;
 		float depth = 1f;
 
 		vertices[0] = new Vector3(-width, -height, depth);
@@ -204,6 +207,8 @@ public class OVRScreenFade : MonoBehaviour
 	/// </summary>
 	IEnumerator Fade(float startAlpha, float endAlpha)
 	{
+		yield return new WaitForSeconds(fadeWaitTime);
+
 		float elapsedTime = 0.0f;
 		while (elapsedTime < fadeTime)
 		{
