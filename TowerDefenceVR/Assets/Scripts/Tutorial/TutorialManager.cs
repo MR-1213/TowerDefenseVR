@@ -11,12 +11,6 @@ using Banzan.Lib.Utility;
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
-    public enum TutorialState
-    {
-        HowToMove,
-        HowToGrab
-    }
-
     //[SerializeField] private Button generateButton;
     //[SerializeField] private TriggerManager triggerManager;
     private PlayableDirector playableDirector;
@@ -26,10 +20,12 @@ public class TutorialManager : MonoBehaviour
     //private int leftStickThreshold = 5;
 
     public bool OKButtonClicked {private get; set; } = false;
+    public bool MovedTrigger {private get; set; } = false;
+    public bool GrabbedTrigger { get; set; } = false;
 
     public bool IsTutorialFlag { get; private set;}
-    public bool MovedTrigger { get; set; } = false;
-    public bool GrabbedTrigger { get; set; } = false;
+    
+    
     public bool ClickedTrigger { get; set; } = false;
     public bool IsEndOfCastingVoice { get; set; } = false;
     public bool GeneratedTrigger { get; set; } = true;
@@ -48,6 +44,10 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(HowToMove());
                 break;
             case 1:
+                StartCoroutine(WaitPlayer());
+                break;
+            case 2:
+                StartCoroutine(HowToGrabWeapons());
                 break;
         }
     }
@@ -61,6 +61,25 @@ public class TutorialManager : MonoBehaviour
     {
         yield return new WaitUntil(() => OKButtonClicked);
         OKButtonClicked = false;
+
+        ResumeTimeline();
+    }
+
+    private IEnumerator WaitPlayer()
+    {
+        yield return new WaitUntil(() => MovedTrigger);
+        MovedTrigger = false;
+
+        ResumeTimeline();
+    }
+
+    private IEnumerator HowToGrabWeapons()
+    {
+        yield return new WaitUntil(() => OKButtonClicked);
+        OKButtonClicked = false;
+
+        yield return new WaitUntil(() => GrabbedTrigger);
+        GrabbedTrigger = false;
 
         ResumeTimeline();
     }
