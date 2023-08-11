@@ -6,9 +6,12 @@ using UnityEngine.AI;
 public class SupportNPCController : MonoBehaviour
 {
     [Tooltip("目的地のリスト")]
-    public List<Transform> destinations;
+    public GameObject destinations;
+    private List<Transform> destinationList = new List<Transform>();
+
     [Tooltip("NPCの向く位置のリスト")]
-    public List<Transform> lookAtPositions;
+    public GameObject lookAtPositions;
+    private List<Transform> lookAtPositionList = new List<Transform>();
     [SerializeField] private TutorialManager tutorialManager;
     private NavMeshAgent agent;
     private Animator animator;
@@ -26,6 +29,22 @@ public class SupportNPCController : MonoBehaviour
 
     private void Start()
     {
+        foreach(Transform destination in destinations.GetComponentsInChildren<Transform>())
+        {
+            if(destination != destinations.transform)
+            {
+                destinationList.Add(destination);
+            }
+        }
+
+        foreach(Transform lookAtPosition in lookAtPositions.GetComponentsInChildren<Transform>())
+        {
+            if(destinations != lookAtPositions.transform)
+            {
+                lookAtPositionList.Add(lookAtPosition);
+            }
+        }
+
         animator.SetInteger("TransitionNumber", 0);
     }
 
@@ -42,9 +61,9 @@ public class SupportNPCController : MonoBehaviour
             agent.nextPosition = transform.position;
         }
 
-        if(destinations.Count > 0)
+        if(destinationList.Count > 0)
         {
-            if (Vector3.Distance(transform.position, destinations[0].position) < 0.1f)
+            if (Vector3.Distance(transform.position, destinationList[0].position) < 0.1f)
             {
                 Debug.Log("ArrivedDestination");
                 animator.SetInteger("TransitionNumber", 0);
@@ -52,7 +71,7 @@ public class SupportNPCController : MonoBehaviour
                 NPCAction(2);
             }
         }
-        else if(lookAtPositions.Count > 0)
+        else if(lookAtPositionList.Count > 0)
         {
             /*
             if(animator.GetInteger("TransitionNumber") == 3)
@@ -67,12 +86,12 @@ public class SupportNPCController : MonoBehaviour
 
     private void NextDestination()
     {
-        destinations.RemoveAt(0);
+        destinationList.RemoveAt(0);
     }
 
     private void NextLookAtPosition()
     {
-        lookAtPositions.RemoveAt(0);
+        lookAtPositionList.RemoveAt(0);
     }
 
     public void NPCAction(int transitionNum)
@@ -85,10 +104,10 @@ public class SupportNPCController : MonoBehaviour
                 break;
             case 1:
                 //Walk
-                if(destinations.Count > 0)
+                if(destinationList.Count > 0)
                 {
                     animator.SetInteger("TransitionNumber", 1);
-                    agent.destination = destinations[0].position;
+                    agent.destination = destinationList[0].position;
                     break;
                 }
                 else
@@ -103,7 +122,7 @@ public class SupportNPCController : MonoBehaviour
                 break;
             case 3:
                 //Talk
-                transform.LookAt(lookAtPositions[0]);
+                transform.LookAt(lookAtPositionList[0]);
                 animator.SetInteger("TransitionNumber", 3);
                 NextLookAtPosition();
                 break;

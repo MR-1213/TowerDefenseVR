@@ -22,6 +22,7 @@ public class TutorialManager : MonoBehaviour
     public bool OKButtonClicked {private get; set; } = false;
     public bool MovedTrigger {private get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
+    public bool AttackedTrigger { get; set; } = false;
 
     public bool IsTutorialFlag { get; private set;}
     
@@ -49,6 +50,9 @@ public class TutorialManager : MonoBehaviour
             case 2:
                 StartCoroutine(HowToGrabWeapons());
                 break;
+            case 3:
+                StartCoroutine(TryAttackWithSword());
+                break;
         }
     }
 
@@ -75,11 +79,18 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator HowToGrabWeapons()
     {
-        yield return new WaitUntil(() => OKButtonClicked);
-        OKButtonClicked = false;
-
+        GrabbedTrigger = false;
         yield return new WaitUntil(() => GrabbedTrigger);
         GrabbedTrigger = false;
+
+        ResumeTimeline();
+    }
+
+    private IEnumerator TryAttackWithSword()
+    {
+        AttackedTrigger = false;
+        yield return new WaitUntil(() => AttackedTrigger);
+        AttackedTrigger = false;
 
         ResumeTimeline();
     }
