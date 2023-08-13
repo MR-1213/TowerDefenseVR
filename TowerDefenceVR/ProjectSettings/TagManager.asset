@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - PlayerSword
+  - Enemy
+  - PlayerMagic
+  - PlayerHand
+  - FenceBarrier
+  - EnemyMagic
   layers:
   - Default
   - TransparentFX
@@ -12,13 +18,13 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Enemy
+  - EnemyMagic
+  - MyPlayer
+  - PlayerMagic
+  - Transparent UI
+  - SupportNPC
+  - PreventFallBarrier
   - 
   - 
   - 
