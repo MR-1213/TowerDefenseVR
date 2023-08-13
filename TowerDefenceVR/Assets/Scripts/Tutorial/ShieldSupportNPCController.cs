@@ -18,14 +18,17 @@ public class ShieldSupportNPCController : MonoBehaviour
     {
         if(other.gameObject.CompareTag("PlayerSword"))
         {
-            tutorialManager.AttackedTrigger = true;
+            tutorialManager.SwordAttackedTrigger = true;
+        }
+
+        if(other.gameObject.CompareTag("PlayerMagic"))
+        {
+            tutorialManager.MagicAttackedTrigger = true;
         }
     }
 
     public void StartLookAtPlayer()
     {
-        shieldTransform.position = new Vector3(-0.003981794f, 0.1466343f, -0.0564862f);
-        shieldTransform.rotation = Quaternion.Euler(0f, 11.443f, -90.0f);
         StartCoroutine(LookAtPlayer());
     }
     
@@ -33,12 +36,14 @@ public class ShieldSupportNPCController : MonoBehaviour
     {
         while(true)
         {
+            Debug.Log("LookAtPlayer");
             if(!lookAtPlayerTrigger)
             {
                 yield break;
             }
 
-            transform.LookAt(playerPos);
+            Vector3 playerDirection = new Vector3(playerPos.position.x, 0f, playerPos.position.z);
+            transform.LookAt(playerDirection);
             yield return null;
         }
     }
@@ -46,7 +51,5 @@ public class ShieldSupportNPCController : MonoBehaviour
     public void StopLookAtPlayer()
     {
         lookAtPlayerTrigger = false;
-        shieldTransform.position = new Vector3(-0.004f, 0f, -0.075f);
-        shieldTransform.rotation = Quaternion.Euler(new Vector3(0f, 93.0f, -90.0f));
     }
 }

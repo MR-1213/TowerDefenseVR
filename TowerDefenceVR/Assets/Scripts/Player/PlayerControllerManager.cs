@@ -85,7 +85,7 @@ public class PlayerControllerManager : MonoBehaviour
                     //DOTweenの動作回数を抑えるため、一度だけ実行する
                     controllerRenderer.material.DOFade(1f, 0.5f);
                     generatedMagicCanvasGroup.DOFade(0f, 0.5f);
-                    playerUIManager.ChangeGeneratedMagicCanvasEnable();
+                    playerUIManager.ChangeGeneratedMagicCanvasDisable();
                 }
             }
             //手のひらを前に向けていないときは、生成済み魔法を非表示にする
@@ -94,7 +94,7 @@ public class PlayerControllerManager : MonoBehaviour
                 //DOTweenの動作回数を抑えるため、一度だけ実行する
                 controllerRenderer.material.DOFade(1f, 0.5f);
                 generatedMagicCanvasGroup.DOFade(0f, 0.5f);
-                playerUIManager.ChangeGeneratedMagicCanvasEnable();
+                playerUIManager.ChangeGeneratedMagicCanvasDisable();
             }
         }
 

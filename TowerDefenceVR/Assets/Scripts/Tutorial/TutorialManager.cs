@@ -22,7 +22,8 @@ public class TutorialManager : MonoBehaviour
     public bool OKButtonClicked {private get; set; } = false;
     public bool MovedTrigger {private get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
-    public bool AttackedTrigger { get; set; } = false;
+    public bool SwordAttackedTrigger { get; set; } = false;
+    public bool MagicAttackedTrigger { get; set; } = false;
 
     public bool IsTutorialFlag { get; private set;}
     
@@ -52,6 +53,9 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 3:
                 StartCoroutine(TryAttackWithSword());
+                break;
+            case 4:
+                StartCoroutine(TryAttackWithMagic());
                 break;
         }
     }
@@ -88,9 +92,18 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator TryAttackWithSword()
     {
-        AttackedTrigger = false;
-        yield return new WaitUntil(() => AttackedTrigger);
-        AttackedTrigger = false;
+        SwordAttackedTrigger = false;
+        yield return new WaitUntil(() => SwordAttackedTrigger);
+        SwordAttackedTrigger = false;
+
+        ResumeTimeline();
+    }
+
+    public IEnumerator TryAttackWithMagic()
+    {
+        MagicAttackedTrigger = false;
+        yield return new WaitUntil(() => MagicAttackedTrigger);
+        MagicAttackedTrigger = false;
 
         ResumeTimeline();
     }

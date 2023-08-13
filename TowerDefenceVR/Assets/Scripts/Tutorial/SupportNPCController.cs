@@ -61,25 +61,20 @@ public class SupportNPCController : MonoBehaviour
             agent.nextPosition = transform.position;
         }
 
+        if(animator.GetInteger("TransitionNumber") == 2)
+        {
+            transform.LookAt(agent.steeringTarget + transform.forward);
+            agent.nextPosition = transform.position;
+        }
+
         if(destinationList.Count > 0)
         {
             if (Vector3.Distance(transform.position, destinationList[0].position) < 0.1f)
             {
-                Debug.Log("ArrivedDestination");
                 animator.SetInteger("TransitionNumber", 0);
                 NextDestination();
                 NPCAction(2);
             }
-        }
-        else if(lookAtPositionList.Count > 0)
-        {
-            /*
-            if(animator.GetInteger("TransitionNumber") == 3)
-            {
-                //Talkののときは常にlookAtPosition[0]の方向を向く
-                transform.LookAt(lookAtPositions[0]);
-            }
-            */
         }
         
     }
@@ -108,6 +103,7 @@ public class SupportNPCController : MonoBehaviour
                 {
                     animator.SetInteger("TransitionNumber", 1);
                     agent.destination = destinationList[0].position;
+                    agent.speed = 3.5f;
                     break;
                 }
                 else
@@ -123,8 +119,14 @@ public class SupportNPCController : MonoBehaviour
             case 3:
                 //Talk
                 transform.LookAt(lookAtPositionList[0]);
-                animator.SetInteger("TransitionNumber", 3);
+                //animator.SetInteger("TransitionNumber", 3);
                 NextLookAtPosition();
+                break;
+            case 4:
+                //Run
+                animator.SetInteger("TransitionNumber", 2);
+                agent.destination = destinationList[0].position;
+                agent.speed = 5.0f;
                 break;
             default:
                 break;   

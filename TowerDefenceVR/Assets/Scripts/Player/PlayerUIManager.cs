@@ -77,8 +77,14 @@ public class PlayerUIManager : MonoBehaviour
 
     public void ChangeGeneratedMagicCanvasEnable()
     {
-        generatedMagicCanvasEnable = !generatedMagicCanvasEnable;
-        lineRenderer.enabled = generatedMagicCanvasEnable;
+        generatedMagicCanvasEnable = true;
+        lineRenderer.enabled = true;
+    }
+
+    public void ChangeGeneratedMagicCanvasDisable()
+    {
+        generatedMagicCanvasEnable = false;
+        lineRenderer.enabled = false;
     }
     
 }
