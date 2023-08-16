@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
-using Banzan.Lib.Utility;
 
 /// <summary>
 /// チュートリアルのタイムライン進行を管理するクラス
@@ -19,15 +18,23 @@ public class TutorialManager : MonoBehaviour
     //private float rightStickThreshold = 5.0f;
     //private int leftStickThreshold = 5;
 
-    public bool OKButtonClicked {private get; set; } = false;
-    public bool MovedTrigger {private get; set; } = false;
+    public bool OKButtonClicked { private get; set; } = false;
+    public bool MovedTrigger { private get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
     public bool SwordAttackedTrigger { get; set; } = false;
     public bool MagicAttackedTrigger { get; set; } = false;
+    public bool KilledTrigger { get; set; } = false;
 
-    public bool IsTutorialFlag { get; private set;}
-    
-    
+
+    //HalfEnemyKilledのコルーチンが開始したことを示すフラグ
+    public bool HalfEnemyKilledCoroutineStarted { get; private set; } = false;
+
+    //AllEnemyKilledのコルーチンが開始したことを示すフラグ
+    public bool AllEnemyKilledCoroutineStarted { get; private set; } = false;
+
+    public bool IsTutorialFlag { get; private set; }
+
+
     public bool ClickedTrigger { get; set; } = false;
     public bool IsEndOfCastingVoice { get; set; } = false;
     public bool GeneratedTrigger { get; set; } = true;
@@ -39,8 +46,8 @@ public class TutorialManager : MonoBehaviour
 
     public void PauseTimeline(int stateNum)
     {
-        playableDirector.Pause();
-        switch(stateNum)
+        PauseTimeline();
+        switch (stateNum)
         {
             case 0:
                 StartCoroutine(HowToMove());
@@ -57,10 +64,21 @@ public class TutorialManager : MonoBehaviour
             case 4:
                 StartCoroutine(TryAttackWithMagic());
                 break;
+            case 5:
+                StartCoroutine(HalfEnemyKilled());
+                break;
+            case 6:
+                StartCoroutine(AllEnemyKilled());
+                break;
         }
     }
 
-    private void ResumeTimeline()
+    public void PauseTimeline()
+    {
+        playableDirector.Pause();
+    }
+
+    public void ResumeTimeline()
     {
         playableDirector.Resume();
     }
@@ -104,6 +122,28 @@ public class TutorialManager : MonoBehaviour
         MagicAttackedTrigger = false;
         yield return new WaitUntil(() => MagicAttackedTrigger);
         MagicAttackedTrigger = false;
+
+        ResumeTimeline();
+    }
+
+    private IEnumerator HalfEnemyKilled()
+    {
+        HalfEnemyKilledCoroutineStarted = true;
+        KilledTrigger = false;
+        yield return new WaitUntil(() => KilledTrigger);
+        KilledTrigger = false;
+        HalfEnemyKilledCoroutineStarted = false;
+
+        ResumeTimeline();
+    }
+
+    private IEnumerator AllEnemyKilled()
+    {
+        AllEnemyKilledCoroutineStarted = true;
+        KilledTrigger = false;
+        yield return new WaitUntil(() => KilledTrigger);
+        KilledTrigger = false;
+        AllEnemyKilledCoroutineStarted = false;
 
         ResumeTimeline();
     }

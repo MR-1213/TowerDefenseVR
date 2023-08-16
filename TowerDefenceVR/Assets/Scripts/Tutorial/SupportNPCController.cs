@@ -126,7 +126,7 @@ public class SupportNPCController : MonoBehaviour
                 //Run
                 animator.SetInteger("TransitionNumber", 2);
                 agent.destination = destinationList[0].position;
-                agent.speed = 5.0f;
+                agent.speed = 4.5f;
                 break;
             default:
                 break;   

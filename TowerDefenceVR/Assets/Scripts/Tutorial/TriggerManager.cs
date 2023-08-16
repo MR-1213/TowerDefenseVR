@@ -23,8 +23,8 @@ public class TriggerManager : MonoBehaviour
     private void Start() 
     {
         tutorialManager = GameObject.Find("TutorialExplanationManager").GetComponent<TutorialManager>();
-        playerWeaponManager = GameObject.Find("OVRPlayerController").GetComponent<PlayerWeaponManager>();
-        playerControllerManager = GameObject.Find("OVRPlayerController").GetComponent<PlayerControllerManager>();
+        playerWeaponManager = GameObject.Find("Player").GetComponent<PlayerWeaponManager>();
+        playerControllerManager = GameObject.Find("Player").GetComponent<PlayerControllerManager>();
 
         //HouseBarrierオブジェクトの場合はRendererとCanvasGroupを取得する
         if(gameObject.name == "HouseBarrier" || gameObject.CompareTag("FenceBarrier"))

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Banzan.Lib.Utility;
 
 /// <summary>
 /// プレイヤーに対して表示されるUIを管理するクラス
@@ -29,7 +28,11 @@ public class PlayerUIManager : MonoBehaviour
     private void Awake() 
     {
         playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
-        lineRenderer.enabled = false;
+    }
+
+    private void Start() 
+    {
+        LaserPointerDisable();
     }
 
     private void Update() 
@@ -73,6 +76,16 @@ public class PlayerUIManager : MonoBehaviour
         playerNewMagicCanvas.SetActive(false);
         newMagicCanvasEnable = false;
         lineRenderer.enabled = false;
+    }
+
+    public void LaserPointerEnable()
+    {
+        lineRenderer.gameObject.SetActive(true);
+    }
+
+    public void LaserPointerDisable()
+    {
+        lineRenderer.gameObject.SetActive(false);
     }
 
     public void ChangeGeneratedMagicCanvasEnable()

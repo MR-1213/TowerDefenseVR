@@ -36,7 +36,6 @@ public class ShieldSupportNPCController : MonoBehaviour
     {
         while(true)
         {
-            Debug.Log("LookAtPlayer");
             if(!lookAtPlayerTrigger)
             {
                 yield break;
