@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ConversationHistoryManager : MonoBehaviour
 {
+    public GameObject conversationHistory;
     [SerializeField] private TutorialManager tutorialManager;
     [SerializeField] private PlayerUIManager playerUIManager;
     [SerializeField] private OVRScreenFade screenFade;
     [SerializeField] private Transform playerPos;
-    [SerializeField] private GameObject settingPanel;
+    [SerializeField] private GameObject settingCanvas;
+    [SerializeField] private GameObject conversationCanvas;
+    [SerializeField] private GameObject commonButtonCanvas;
     [SerializeField] private GameObject voiceTextCanvas;
+    [SerializeField] private GameObject content;
 
     private bool isOpenSetting = false;
 
@@ -17,7 +22,6 @@ public class ConversationHistoryManager : MonoBehaviour
     {
         if(OVRInput.GetDown(OVRInput.RawButton.Start) && !isOpenSetting)
         {
-            Debug.Log("メニューを開く");
             isOpenSetting = true;
             screenFade.fadeTime = 0f;
             screenFade.fadeWaitTime = 1.0f;
@@ -27,7 +31,6 @@ public class ConversationHistoryManager : MonoBehaviour
         }
         else if(OVRInput.GetDown(OVRInput.RawButton.Start) && isOpenSetting)
         {
-            Debug.Log("メニューを閉じる");
             isOpenSetting = false;
             screenFade.FadeIn();
 
@@ -38,7 +41,7 @@ public class ConversationHistoryManager : MonoBehaviour
     private IEnumerator SettingPanelActive()
     {
         yield return new WaitForSeconds(1.0f);
-        settingPanel.SetActive(true);
+        settingCanvas.SetActive(true);
         transform.position = playerPos.position + playerPos.forward * 2.0f;
         transform.rotation = Quaternion.LookRotation(playerPos.forward);
 
@@ -50,10 +53,18 @@ public class ConversationHistoryManager : MonoBehaviour
     private IEnumerator SettingPanelInactive()
     {
         yield return new WaitForSeconds(1.0f);
-        settingPanel.SetActive(false);
+        settingCanvas.SetActive(false);
+        conversationCanvas.SetActive(false);
+        commonButtonCanvas.SetActive(false);
 
         voiceTextCanvas.layer = LayerMask.NameToLayer("Transparent UI");
         playerUIManager.LaserPointerDisable();
         tutorialManager.ResumeTimeline();
+    }
+
+    public void AddConversationHistory(string text)
+    {
+        var history = Instantiate(conversationHistory, content.transform);
+        history.GetComponentInChildren<TMP_Text>().text = text;
     }
 }

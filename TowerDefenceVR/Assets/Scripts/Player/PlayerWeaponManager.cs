@@ -30,7 +30,7 @@ public class PlayerWeaponManager : MonoBehaviour
         //入手した武器をリストに追加する
         foreach(var weapon in allWeaponList)
         {
-            if(newWeapon.name == weapon.name)
+            if(newWeapon.name == weapon.name && !getWeaponList.Contains(weapon))
             {
                 getWeaponList.Add(weapon);
             }

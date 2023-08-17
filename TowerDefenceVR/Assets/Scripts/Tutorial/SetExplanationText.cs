@@ -12,6 +12,7 @@ public class SetExplanationText : MonoBehaviour
 {
     [SerializeField] private DialogTextManager dialogTextManager;
     [SerializeField] private PlayableDirector director;
+    [SerializeField] private ConversationHistoryManager conversationHistoryManager;
 
     private TimelineAsset timeline;
     private AudioTrack audioTrack;
@@ -60,15 +61,6 @@ public class SetExplanationText : MonoBehaviour
 
         // TimelineAssetを取得
         timeline = (TimelineAsset)director.playableAsset;
-        // AudioTrackを取得
-        foreach (TrackAsset trackAsset in timeline.GetOutputTracks())
-        {
-            if (trackAsset is AudioTrack)
-            {
-                audioTrack = (AudioTrack)trackAsset;
-                break;
-            }
-        }
     }
 
     public void SetText()
@@ -81,25 +73,11 @@ public class SetExplanationText : MonoBehaviour
 
         //最初のテキストを取得し、Listから削除
         nextText = explanationTextList[0];
+        conversationHistoryManager.AddConversationHistory(nextText);
         explanationTextList.RemoveAt(0);
         explanationText.text = nextText;
 
         //テキスト送りを開始する
         dialogTextManager.Show(explanationText);
-    }
-
-    private AudioClip GetCurrentAudioClip()
-    {
-        foreach (TimelineClip clip in audioTrack.GetClips())
-        {
-            if (clip.start <= director.time && clip.end > director.time)
-            {
-                AudioPlayableAsset audioPlayableAsset = clip.asset as AudioPlayableAsset;
-                AudioClip currentClip = audioPlayableAsset.clip;
-                return currentClip;
-            }
-        }
-
-        return null;
     }
 }

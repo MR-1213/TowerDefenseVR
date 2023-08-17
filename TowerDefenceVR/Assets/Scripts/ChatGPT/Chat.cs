@@ -51,8 +51,6 @@ public class Chat : MonoBehaviour
     {
         generateMagic = GetComponent<GenerateMagic>();
 
-        generateButton.interactable = false;
-
         generatedMagicList.Add("攻撃魔法");
     }
 
