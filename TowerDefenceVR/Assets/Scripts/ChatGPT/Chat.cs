@@ -19,8 +19,6 @@ public class Chat : MonoBehaviour
     SearchMagicInformation searchMagicInformation;
     GenerateMagic generateMagic;
 
-    [SerializeField] private TMP_Dropdown generatedMagicDropdown; //生成済み魔法のドロップダウン
-    private List<string> generatedMagicList = new List<string>(); //生成済み魔法のリスト
     private string newMagicName = ""; //新しく生成する魔法名
 
     //初期メッセージを定義
@@ -34,7 +32,7 @@ public class Chat : MonoBehaviour
                         属性:<魔法名から推察された属性>:attributeEnd
                         威力:<魔法名から推察された威力の値(001-100)>:powerEnd
                         }
-                        <魔法名から推察された属性>は<火><氷><水><雷><風><土><光><闇>のいずれかとします。推察できない魔法であった場合は<無>としてください。
+                        <魔法名から推察された属性>は<火><氷><水><風><雷<土><光><闇>のいずれかとしてください。推察できない魔法であった場合は<無>としてください。
                         <魔法名から推察された威力>は最も弱いものを001、最も強いものを100として整数値で出来るだけ小さい値を推察してください。数値は必ず3桁で示してください。
 
                         回答のフォーマットに即した回答のみ答えてください。
@@ -50,8 +48,6 @@ public class Chat : MonoBehaviour
     private void Start() 
     {
         generateMagic = GetComponent<GenerateMagic>();
-
-        generatedMagicList.Add("攻撃魔法");
     }
 
     
@@ -60,10 +56,10 @@ public class Chat : MonoBehaviour
     {
         tutorialManager.ClickedTrigger = true;
         //新たな魔法の入力を受け付ける
-        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ファイアボール" };
+        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ライトニング" };
         context.Add(message);
         //魔法名を保存して入力フィールドを空にする
-        newMagicName = "ファイアボール";
+        newMagicName = "ライトニング";
         inputField.text = "";
         //エラーメッセージを空にする
         errorMessage.text = "";
@@ -72,21 +68,21 @@ public class Chat : MonoBehaviour
     }
 
     
-    /*
+    
     public void DebugGenerateMagic2()
     {
         //新たな魔法の入力を受け付ける
-        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "ウォーターウェーブ" };
+        var message = new OpenAIChatCompletionAPI.Message() { role = "user", content = "水弾" };
         context.Add(message);
         //魔法名を保存して入力フィールドを空にする
-        newMagicName = "ウォーターウェーブ";
+        newMagicName = "水弾";
         inputField.text = "";
         //エラーメッセージを空にする
         errorMessage.text = "";
         //ChatGPTとの通信準備開始
         StartCoroutine(ChatCompletionRequest());
     }
-    */
+    
 
     public void OnGenerateButtonClick()
     {
@@ -121,7 +117,7 @@ public class Chat : MonoBehaviour
         //レスポンスがエラーであった場合はエラー処理
         if (request.IsError)
         {
-            GenerateErrorMessage(1);
+            GenerateErrorMessage("魔法の生成に失敗した...もう一度やってみよう(1)");
             yield break;
         }
         //レスポンスのリストの中から最も新しいレスポンス内容を取得する
@@ -132,41 +128,28 @@ public class Chat : MonoBehaviour
         string magicInfoKey = searchMagicInformation.GetMagicInfo();
         if(string.IsNullOrEmpty(magicInfoKey))
         {
-            GenerateErrorMessage(2);
+            GenerateErrorMessage("魔法の生成に失敗した...もう一度やってみよう(2)" + message.content);
             yield break;
         }
 
         //魔法の生成をする
-        //チュートリアル中では詠唱中の音声が終了したら生成する
-        if(tutorialManager.IsTutorialFlag) yield return new WaitUntil(() => tutorialManager.IsEndOfCastingVoice == true);
         GameObject magic = generateMagic.Generate(magicInfoKey);
         if(magic == null)
         {
-            GenerateErrorMessage(3);
+            GenerateErrorMessage("魔法の生成に失敗した...もう一度やってみよう(3)" + magicInfoKey);
             yield break;
         }
         
         //生成した魔法を保存する
         generateMagic.SaveMagic(newMagicName);
-
-        //生成済み魔法のドロップダウンに追加する
-        generatedMagicList.Add(newMagicName);
-        generatedMagicDropdown.ClearOptions();
-        generatedMagicDropdown.AddOptions(generatedMagicList);
-
-        //(非同期処理)
-        yield return new WaitUntil(() => tutorialManager.GeneratedTrigger == false);
-
-        //魔法生成したらチュートリアルを再開する
-        if(tutorialManager.IsTutorialFlag) tutorialManager.GeneratedTrigger = true;
         
         //新たな魔法の生成を受け付けられるようにする
         generateButton.interactable = true;
     }
 
-    private void GenerateErrorMessage(int errorCode)
+    private void GenerateErrorMessage(string message)
     {
-        errorMessage.text = "魔法が上手く生成できませんでした...\nもう一度お試しください" + "(" + errorCode + ")";
+        errorMessage.text = message;
         generateButton.interactable = true;
     }
 }

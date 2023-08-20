@@ -22,8 +22,9 @@ public class PlayerUIManager : MonoBehaviour
     private TouchScreenKeyboard keyboard;
 
     [Header("生成済み魔法UI関係")]
-    [SerializeField] private TMP_Dropdown generatedMagicDropdown;
-    private bool generatedMagicCanvasEnable = false;
+    [SerializeField] private GameObject generatedMagicCanvas;
+
+    private int laserAccessCount = 1;
 
     private void Awake() 
     {
@@ -80,24 +81,60 @@ public class PlayerUIManager : MonoBehaviour
 
     public void LaserPointerEnable()
     {
+        laserAccessCount++;
         lineRenderer.gameObject.SetActive(true);
+        Debug.Log(laserAccessCount);
     }
 
     public void LaserPointerDisable()
     {
-        lineRenderer.gameObject.SetActive(false);
+        laserAccessCount--;
+        Debug.Log(laserAccessCount);
+        if(laserAccessCount <= 0)
+        {
+            lineRenderer.gameObject.SetActive(false);
+        }
+        
     }
 
     public void ChangeGeneratedMagicCanvasEnable()
     {
-        generatedMagicCanvasEnable = true;
-        lineRenderer.enabled = true;
+        int childCount = generatedMagicCanvas.transform.childCount;
+        if(childCount == 0) return;
+
+        generatedMagicCanvas.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     public void ChangeGeneratedMagicCanvasDisable()
     {
-        generatedMagicCanvasEnable = false;
-        lineRenderer.enabled = false;
+        int childCount = generatedMagicCanvas.transform.childCount;
+        if(childCount == 0) return;
+
+        generatedMagicCanvas.transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    public void NextGeneratedMagic()
+    {
+        int childCount = generatedMagicCanvas.transform.childCount;
+        if(childCount == 0) return;
+
+        for(int i = 0; i < childCount; i++)
+        {
+            if(generatedMagicCanvas.transform.GetChild(i).gameObject.activeSelf)
+            {
+                generatedMagicCanvas.transform.GetChild(i).gameObject.SetActive(false);
+                if(i == childCount - 1)
+                {
+                    generatedMagicCanvas.transform.GetChild(0).gameObject.SetActive(true);
+                }
+                else
+                {
+                    generatedMagicCanvas.transform.GetChild(i + 1).gameObject.SetActive(true);
+                }
+                break;
+            }
+        }
+        
     }
     
 }

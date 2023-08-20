@@ -2,21 +2,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+//using Microsoft.Unity.VisualStudio.Editor;
 
 /// <summary>
 /// ChatGPTからの回答をもとに魔法を生成するクラス
 /// </summary>
 public class GenerateMagic : MonoBehaviour
 {
-    [SerializeField] Transform magicParent;
+    [SerializeField] Transform magicCastParent;
+    [SerializeField] Transform generatedMagicUIParent;
+    [SerializeField] GameObject generatedMagicUI;
     [SerializeField, Tooltip("0:火, 1:水, 2:氷, 3:風, 4:雷, 5:土, 6:光, 7:闇")] GameObject[] magics = new GameObject[8];
+    [SerializeField] Sprite[] magicIcons = new Sprite[8];
+
     private string attributeKey;
     private string powerKey;
     private GameObject selectedMagic;
     private int selectedMagicIndex = -1;
     private Dictionary<string, GameObject> savedMagicDictionary = new Dictionary<string, GameObject>();
+    private int savedMagicMaxCount = 5;
 
     Dictionary<string, Action<string>> actionDictionary;
 
@@ -46,7 +53,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[0], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[0], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 0;
                             break;
                         default:
@@ -77,7 +84,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[1], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[1], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 1;
                             break;
                         default:
@@ -108,7 +115,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[2], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[2], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 2;
                             break;
                         default:
@@ -139,7 +146,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[3], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[3], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 3;
                             break;
                         default:
@@ -170,7 +177,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[4], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[4], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 4;
                             break;
                         default:
@@ -200,7 +207,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[5], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[5], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 5;
                             break;
                         default:
@@ -231,7 +238,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[6], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[6], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 6;
                             break;
                         default:
@@ -262,7 +269,7 @@ public class GenerateMagic : MonoBehaviour
                         case 80:
                         case 90:
                         case 100:
-                            selectedMagic = Instantiate(magics[7], magicParent.position, magicParent.rotation, magicParent);
+                            selectedMagic = Instantiate(magics[7], magicCastParent.position, magicCastParent.rotation, magicCastParent);
                             selectedMagicIndex = 7;
                             break;
                         default:
@@ -312,23 +319,30 @@ public class GenerateMagic : MonoBehaviour
         if(!savedMagicDictionary.ContainsKey(magicName))
         {
             savedMagicDictionary.Add(magicName, magics[selectedMagicIndex]);
+
+            if(savedMagicDictionary.Count >= savedMagicMaxCount)
+            {
+                //保存できる魔法の数を超えている場合は一番古い魔法を削除
+                string oldestMagicName = generatedMagicUIParent.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text;
+                Destroy(savedMagicDictionary[oldestMagicName]);
+                savedMagicDictionary.Remove(oldestMagicName);
+                Destroy(generatedMagicUIParent.GetChild(0).gameObject);
+            }
+
+            GameObject magicUI = Instantiate(generatedMagicUI, generatedMagicUIParent);
+            magicUI.GetComponentInChildren<Image>().sprite = magicIcons[selectedMagicIndex];
+            magicUI.GetComponentInChildren<TextMeshProUGUI>().text = magicName;
+            magicUI.SetActive(false);
         }
     }
 
-    public void GenerateSavedMagic(TMP_Dropdown dropdown)
+    public void GenerateSavedMagic(GameObject selectedMagic)
     {
-        if(dropdown.value == 0)
-        {
-            return;
-        }
-        
-        string magicName = dropdown.options[dropdown.value].text;
-
+        string magicName = selectedMagic.GetComponentInChildren<TextMeshProUGUI>().text;
         if(savedMagicDictionary.ContainsKey(magicName))
         {
-            Instantiate(savedMagicDictionary[magicName], magicParent.position, magicParent.rotation, magicParent);
+            Instantiate(savedMagicDictionary[magicName], magicCastParent.position, magicCastParent.rotation, magicCastParent);
         }
-
-        dropdown.value = 0;
+        
     }
 }

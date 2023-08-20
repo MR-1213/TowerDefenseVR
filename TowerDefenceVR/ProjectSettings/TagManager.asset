@@ -11,6 +11,7 @@ TagManager:
   - PlayerHand
   - FenceBarrier
   - EnemyMagic
+  - Gauge
   layers:
   - Default
   - TransparentFX

@@ -34,28 +34,39 @@ public class ShieldSupportNPCController : MonoBehaviour
             var audio = other.gameObject.GetComponentInParent<AudioSource>();
             audio.clip = swordSlashSE[Random.Range(0, swordSlashSE.Length)];
             audio.PlayOneShot(audio.clip);
+
             if(shieldHPSlider.value <= 30.0f)
             {
                 shieldHPSlider.value = 30.0f;
             }
             else
             {
-                shieldHPSlider.DOValue(shieldHPSlider.value - 10.0f, 0.5f);
-                if(shieldHPSlider.value <= 30.0f)
-                {
-                    tutorialManager.SwordAttackedTrigger = true;
-                }
+                shieldHPSlider.DOValue(shieldHPSlider.value - 10.0f, 0.5f)
+                .OnComplete(() => {
+                    if(shieldHPSlider.value <= 30.0f)
+                    {
+                        tutorialManager.SwordAttackedTrigger = true;
+                    }
+                });
             }
             
         }
 
         if(other.gameObject.CompareTag("PlayerMagic"))
         {
-            shieldHPSlider.DOValue(shieldHPSlider.value - 10.0f, 0.5f);
-            if(shieldHPSlider.value <= 0f)
+            if(shieldHPSlider.value > 30.0f)
             {
-                shieldHPSlider.value = 0f;
-                tutorialManager.MagicAttackedTrigger = true;
+                shieldHPSlider.value = 60.0f;
+            }
+            else
+            {
+                shieldHPSlider.DOValue(shieldHPSlider.value - 10.0f, 0.5f)
+                .OnComplete(() => {
+                    if(shieldHPSlider.value <= 0f)
+                    {
+                        tutorialManager.MagicAttackedTrigger = true;
+                    }
+                });
             }
         }
     }
