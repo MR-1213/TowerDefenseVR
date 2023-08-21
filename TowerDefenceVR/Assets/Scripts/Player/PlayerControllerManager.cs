@@ -10,8 +10,6 @@ using DG.Tweening;
 /// </summary>
 public class PlayerControllerManager : MonoBehaviour
 {
-    public Chat chat;
-
     [SerializeField] private PlayerUIManager playerUIManager;
     [SerializeField] private GenerateMagic generateMagic;
     private PlayerWeaponManager playerWeaponManager;
@@ -29,9 +27,6 @@ public class PlayerControllerManager : MonoBehaviour
     private bool isPushingGenerateButton = false; //生成ボタンを押しているかを表すフラグ
     private bool isGenerating = false; //魔法を生成中かを表すフラグ
     private float generateButtonPushingTime = 0f; //生成ボタンを押している時間
-    private int index = 0; //生成済み魔法UIのインデックス
-
-    private int testCount = 0;
 
     private void Start() 
     {
@@ -54,12 +49,6 @@ public class PlayerControllerManager : MonoBehaviour
                 Debug.Log("剣を取り出す");
                 playerWeaponManager.TakeoutWeapon();
             }
-        }
-
-        //Yボタンで魔法生成UIを表示/非表示
-        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-        {
-            playerUIManager.ChangeNewMagicCanvasEnable();
         }
 
         //左手のひらを前に向けたら生成済み魔法UIを表示する
@@ -134,7 +123,7 @@ public class PlayerControllerManager : MonoBehaviour
                 //ゲージを上昇させる
                 gaugeImage.transform.localPosition = new Vector3(0f, -200f + 200f * generateButtonPushingTime / 2f, 0f);
 
-                if(generateButtonPushingTime > 0.5f)
+                if(generateButtonPushingTime > 0.8f)
                 {
                     isGenerating = true;
                 }
@@ -149,14 +138,14 @@ public class PlayerControllerManager : MonoBehaviour
                 GameObject selectedMagic = null;
                 foreach(Transform child in generatedMagicCanvasGroup.GetComponentsInChildren<Transform>())
                 {
-                    if(child.gameObject.activeSelf && child.transform != generatedMagicCanvasGroup.transform)
+                    if(child.gameObject.activeSelf && child.transform.parent == generatedMagicCanvasGroup.transform)
                     {
                         selectedMagic = child.gameObject;
                         break;
                     }
                 }
 
-                if(selectedMagic != null) generateMagic.GenerateSavedMagic(selectedMagic);
+                if(selectedMagic != null) generateMagic.GenerateSelectedMagic(selectedMagic);
                 
                 gaugeImage.transform.localPosition = new Vector3(0f, -200f, 0f);
                 isGenerating = true;
@@ -168,7 +157,7 @@ public class PlayerControllerManager : MonoBehaviour
         if(OVRInput.GetUp(OVRInput.Button.One, OVRInput.Controller.LTouch) && !isGenerating)
         {
             //次の生成済みUIをアクティブにする
-            playerUIManager.NextGeneratedMagic();
+            playerUIManager.NextMagic();
 
             gaugeImage.transform.localPosition = new Vector3(0f, -200f, 0f);
             isPushingGenerateButton = false;
@@ -181,12 +170,6 @@ public class PlayerControllerManager : MonoBehaviour
             generateButtonPushingTime = 0f;
         }
 
-        //デバッグ用 Aボタンで魔法生成
-        if(OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
-        {
-            testCount++;
-            if(testCount == 1) chat.DebugGenerateMagic1();
-            if(testCount == 2) chat.DebugGenerateMagic2();
-        }
+        
     }
 }

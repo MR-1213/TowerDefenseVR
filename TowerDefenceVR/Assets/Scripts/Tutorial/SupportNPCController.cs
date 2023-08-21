@@ -12,17 +12,18 @@ public class SupportNPCController : MonoBehaviour
     [Tooltip("NPCの向く位置のリスト")]
     public GameObject lookAtPositions;
     private List<Transform> lookAtPositionList = new List<Transform>();
+
     [SerializeField] private TutorialManager tutorialManager;
+
     private NavMeshAgent agent;
     private Animator animator;
-    private SphereCollider sphereCollider;
     private bool isArrivedDestination = false;
+    private bool isCombat = false;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        sphereCollider = GetComponent<SphereCollider>();
         agent.updatePosition = false;
         agent.updateRotation = false;
     }
@@ -69,7 +70,13 @@ public class SupportNPCController : MonoBehaviour
 
         if(destinationList.Count > 0)
         {
-            if (Vector3.Distance(transform.position, destinationList[0].position) < 0.1f)
+            if (isCombat && Vector3.Distance(transform.position, destinationList[0].position) < 0.1f)
+            {
+                animator.SetInteger("TransitionNumber", 3);
+                NextDestination();
+                isCombat = false;
+            }
+            else if(!isCombat && Vector3.Distance(transform.position, destinationList[0].position) < 0.1f)
             {
                 animator.SetInteger("TransitionNumber", 0);
                 NextDestination();
@@ -123,10 +130,17 @@ public class SupportNPCController : MonoBehaviour
                 NextLookAtPosition();
                 break;
             case 4:
-                //Run
+                //Run & Idle
                 animator.SetInteger("TransitionNumber", 2);
                 agent.destination = destinationList[0].position;
                 agent.speed = 4.5f;
+                break;
+            case 5:
+                //Run & Combat
+                animator.SetInteger("TransitionNumber", 2);
+                agent.destination = destinationList[0].position;
+                agent.speed = 4.5f;
+                isArrivedDestination = true;
                 break;
             default:
                 break;   

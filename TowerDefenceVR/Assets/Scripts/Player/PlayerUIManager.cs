@@ -8,88 +8,30 @@ using TMPro;
 /// </summary>
 public class PlayerUIManager : MonoBehaviour
 {
-    [Header("参照スクリプト")]
-    [SerializeField] private Chat chat;
-
     [Header("UI共通")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private LineRenderer lineRenderer;
-
-    [Header("魔法生成UI関係")]
-    [SerializeField] private GameObject playerNewMagicCanvas; 
-    [SerializeField] private TMP_InputField magicInputField;
-    private bool newMagicCanvasEnable = false;
-    private TouchScreenKeyboard keyboard;
-
-    [Header("生成済み魔法UI関係")]
-    [SerializeField] private GameObject generatedMagicCanvas;
-
     private int laserAccessCount = 1;
 
-    private void Awake() 
-    {
-        playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
-    }
+    [Header("魔法UI関係")]
+    [SerializeField] private GameObject generatedMagicCanvas;
+    private int latestSelectedMagicIndex = 0;
+    
 
     private void Start() 
     {
         LaserPointerDisable();
     }
 
-    private void Update() 
-    {
-        //キーボードの入力をインプットフィールドに反映する
-        if(keyboard != null)
-        {
-            magicInputField.text = keyboard.text;
-        }
-
-    }
-
-    public void ChangeNewMagicCanvasEnable()
-    {
-        //魔法生成のUIの表示・非表示を切り替える
-        newMagicCanvasEnable = !newMagicCanvasEnable;
-        playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
-
-        //レーザーポインターの表示・非表示も切り替える
-        lineRenderer.enabled = newMagicCanvasEnable;
-        
-        if(mainCamera != null)
-        {
-            //カメラの向いている方向の少し下にUIを配置する
-            playerNewMagicCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f - mainCamera.transform.up * 1.0f;
-
-            Vector3 lookPos2 = mainCamera.transform.position - playerNewMagicCanvas.transform.position;
-
-            playerNewMagicCanvas.transform.rotation = Quaternion.LookRotation(lookPos2);
-            playerNewMagicCanvas.transform.Rotate(Vector3.up, 180f, Space.Self);
-        }
-    }
-
-    public void OnGenerateButton()
-    {
-        chat.OnGenerateButtonClick();
-    }
-
-    public void OnBackButton()
-    {
-        playerNewMagicCanvas.SetActive(false);
-        newMagicCanvasEnable = false;
-        lineRenderer.enabled = false;
-    }
-
     public void LaserPointerEnable()
     {
         laserAccessCount++;
         lineRenderer.gameObject.SetActive(true);
-        Debug.Log(laserAccessCount);
     }
 
     public void LaserPointerDisable()
     {
         laserAccessCount--;
-        Debug.Log(laserAccessCount);
         if(laserAccessCount <= 0)
         {
             lineRenderer.gameObject.SetActive(false);
@@ -99,24 +41,27 @@ public class PlayerUIManager : MonoBehaviour
 
     public void ChangeGeneratedMagicCanvasEnable()
     {
-        int childCount = generatedMagicCanvas.transform.childCount;
-        if(childCount == 0) return;
-
-        generatedMagicCanvas.transform.GetChild(0).gameObject.SetActive(true);
+        generatedMagicCanvas.transform.GetChild(latestSelectedMagicIndex).gameObject.SetActive(true);
     }
 
     public void ChangeGeneratedMagicCanvasDisable()
     {
         int childCount = generatedMagicCanvas.transform.childCount;
-        if(childCount == 0) return;
 
-        generatedMagicCanvas.transform.GetChild(0).gameObject.SetActive(false);
+        for(int i = 0; i < childCount; i++)
+        {
+            if(generatedMagicCanvas.transform.GetChild(i).gameObject.activeSelf)
+            {
+                generatedMagicCanvas.transform.GetChild(i).gameObject.SetActive(false);
+                latestSelectedMagicIndex = i;
+                break;
+            }
+        }
     }
 
-    public void NextGeneratedMagic()
+    public void NextMagic()
     {
         int childCount = generatedMagicCanvas.transform.childCount;
-        if(childCount == 0) return;
 
         for(int i = 0; i < childCount; i++)
         {
@@ -131,6 +76,7 @@ public class PlayerUIManager : MonoBehaviour
                 {
                     generatedMagicCanvas.transform.GetChild(i + 1).gameObject.SetActive(true);
                 }
+                
                 break;
             }
         }
