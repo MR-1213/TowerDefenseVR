@@ -27,10 +27,15 @@ public class TutorialManager : MonoBehaviour
 
 
     //HalfEnemyKilledのコルーチンが開始したことを示すフラグ
-    public bool HalfEnemyKilledCoroutineStarted { get; private set; } = false;
+    public bool HalfCoroutineStarted { get; private set; } = false;
 
     //AllEnemyKilledのコルーチンが開始したことを示すフラグ
-    public bool AllEnemyKilledCoroutineStarted { get; private set; } = false;
+    public bool AllCoroutineStarted { get; private set; } = false;
+
+    //AdditionalEnemyKilledのコルーチンが開始したことを示すフラグ
+    public bool AdditionalCoroutineStarted { get; private set; } = false;
+
+
     private bool isTutorialPause = false;
 
     public bool IsTutorialFlag { get; private set; }
@@ -71,6 +76,9 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 6:
                 StartCoroutine(AllEnemyKilled());
+                break;
+            case 7:
+                StartCoroutine(AdditionalEnemyKilled());
                 break;
         }
     }
@@ -135,11 +143,11 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator HalfEnemyKilled()
     {
-        HalfEnemyKilledCoroutineStarted = true;
+        HalfCoroutineStarted = true;
         KilledTrigger = false;
         yield return new WaitUntil(() => KilledTrigger);
         KilledTrigger = false;
-        HalfEnemyKilledCoroutineStarted = false;
+        HalfCoroutineStarted = false;
 
         isTutorialPause = false;
         ResumeTimeline();
@@ -147,11 +155,23 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator AllEnemyKilled()
     {
-        AllEnemyKilledCoroutineStarted = true;
+        AllCoroutineStarted = true;
         KilledTrigger = false;
         yield return new WaitUntil(() => KilledTrigger);
         KilledTrigger = false;
-        AllEnemyKilledCoroutineStarted = false;
+        AllCoroutineStarted = false;
+
+        isTutorialPause = false;
+        ResumeTimeline();
+    }
+
+    private IEnumerator AdditionalEnemyKilled()
+    {
+        AdditionalCoroutineStarted = true;
+        KilledTrigger = false;
+        yield return new WaitUntil(() => KilledTrigger);
+        KilledTrigger = false;
+        AdditionalCoroutineStarted = false;
 
         isTutorialPause = false;
         ResumeTimeline();

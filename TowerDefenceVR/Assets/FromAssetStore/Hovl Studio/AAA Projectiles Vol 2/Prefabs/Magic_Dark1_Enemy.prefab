@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 135713622178651324}
   m_Layer: 7
   m_Name: Magic_Dark1_Enemy
-  m_TagString: PlayerMagic
+  m_TagString: EnemyMagic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

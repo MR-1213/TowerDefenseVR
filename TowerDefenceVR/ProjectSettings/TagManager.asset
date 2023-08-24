@@ -12,6 +12,7 @@ TagManager:
   - FenceBarrier
   - EnemyMagic
   - Gauge
+  - TargetCore
   layers:
   - Default
   - TransparentFX
