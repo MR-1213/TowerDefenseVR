@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Attack_SwordCallback : StateMachineBehaviour
 {
-    public bool isAnimStateEnd { get; set; } = false;
     private float animEndTime = 1.0f;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -18,7 +17,7 @@ public class Attack_SwordCallback : StateMachineBehaviour
     {
         if(stateInfo.normalizedTime >= animEndTime)
         {
-            isAnimStateEnd = true;
+            animator.gameObject.GetComponent<EnemyStateManager>().isAnimStateEnd = true;
             animEndTime += 1.0f;
         }
     }

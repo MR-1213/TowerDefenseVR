@@ -68,6 +68,7 @@ public class EnemyStateManager : MonoBehaviour
     private Tween attackTween;
     private Attack_MazeCallback attackCallback;
     private Attack_SwordCallback attackSwordCallback;
+    public bool isAnimStateEnd { get; set;} = false;
 
     private void Start() 
     {
@@ -148,13 +149,17 @@ public class EnemyStateManager : MonoBehaviour
         enemyHPSlider.minValue = 0.0f;
         enemyHPSlider.maxValue = 30.0f;
         enemyHPSlider.value = enemyHPSlider.maxValue;
+    }
 
+    private void OnEnable() 
+    {
         ChangeState(EnemyState.GoToCore);
     }
 
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.CompareTag("PlayerSword"))
+        //BoxColliderに剣が当たったらダメージを受ける
+        if (other.gameObject.CompareTag("PlayerSword") && Vector3.Distance(transform.position, playerTransform.position) < 4.0f)
         {
             audioSource.PlayOneShot(enemyManager.GetAttackedSE());
             statusManager.NormalDamage();
@@ -179,7 +184,6 @@ public class EnemyStateManager : MonoBehaviour
     {
         if(col.gameObject.CompareTag("PlayerMagic"))
         {
-            audioSource.PlayOneShot(enemyManager.GetAttackedSE());
             statusManager.NormalDamage();
             enemyHPSlider.DOValue(statusManager.HP, 0.5f);
             if(statusManager.HP == 0)
@@ -199,14 +203,6 @@ public class EnemyStateManager : MonoBehaviour
     private void Update() 
     {
         stateTime += Time.deltaTime;
-        if(enemyType == EnemyType.MagicEnemy)
-        {
-            if(attackCallback.isGenerateTime)
-            {
-                attackCallback.isGenerateTime = false;
-                Instantiate(selectedMagic, handTransform.position, handTransform.rotation);
-            }
-        }
 
         switch(currentState)
         {
@@ -259,7 +255,11 @@ public class EnemyStateManager : MonoBehaviour
                 {
                     CheckEnemyType();
                     //NavMeshAgentを止める
-                    navMeshAgent.isStopped = true;
+                    if(isCoreAttacking)
+                    {
+                        navMeshAgent.isStopped = true;
+                    }
+                    
                 }
 
                 if(!isCoreAttacking && Vector3.Distance(transform.position, playerTransform.position) >= attackDistanceThreshold + 0.5f)
@@ -275,9 +275,10 @@ public class EnemyStateManager : MonoBehaviour
             case EnemyState.AttackIdle:
             {
 
-                if(enemyType == EnemyType.SwordEnemy && attackSwordCallback.isAnimStateEnd)
+                if(enemyType == EnemyType.SwordEnemy && isAnimStateEnd)
                 {
-                    attackSwordCallback.isAnimStateEnd = false;
+                    Debug.Log("AttackIdle");
+                    isAnimStateEnd = false;
                     CheckAttackTarget();
                     ChangeState(EnemyState.Attack);
                     return;
@@ -305,6 +306,11 @@ public class EnemyStateManager : MonoBehaviour
                     Destroy(this.gameObject);
                 }
 
+                return;
+            }
+
+            default:
+            {
                 return;
             }
         }
@@ -350,5 +356,10 @@ public class EnemyStateManager : MonoBehaviour
             playerDirection.y = 0;
             transform.rotation = Quaternion.LookRotation(playerDirection);
         }
+    }
+
+    public void GenerateMagic()
+    {
+        Instantiate(selectedMagic, handTransform.position, handTransform.rotation);
     }
 }

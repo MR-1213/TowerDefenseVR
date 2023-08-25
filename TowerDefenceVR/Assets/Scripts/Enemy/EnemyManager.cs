@@ -77,7 +77,7 @@ public class EnemyManager : MonoBehaviour
                     secondEnemyList.Add(enemy.gameObject);
                 }
             }
-            //チュートリアル : 1体の敵を倒したかどうか
+            //チュートリアル : 全ての敵を倒したかどうか
             if(secondEnemyList.Count == 0)
             {
                 tutorialManager.KilledTrigger = true;

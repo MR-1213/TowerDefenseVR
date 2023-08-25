@@ -19,7 +19,7 @@ public class PlayerControllerManager : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer controllerRenderer; //コントローラーのメッシュ
     [SerializeField] private CanvasGroup generatedMagicCanvasGroup; //生成済み魔法を表示するキャンバス
 
-    public bool isGrabWeapon {private get; set;} = false; //武器を掴んでいるかどうかを表すフラグ
+    public bool isGrabWeapon {get; set;} = false; //武器を掴んでいるかどうかを表すフラグ
     public GameObject grabWeapon {private get; set;} //掴んでいる武器
 
     private GameObject gaugeImage;

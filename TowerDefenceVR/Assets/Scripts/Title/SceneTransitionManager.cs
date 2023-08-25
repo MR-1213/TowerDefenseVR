@@ -29,4 +29,9 @@ public class SceneTransitionManager : MonoBehaviour
             SceneManager.LoadScene("Tutorial");
         });
     }
+
+    public void DelaySceneTransition()
+    {
+        DOVirtual.DelayedCall(12.0f, () => SceneManager.LoadScene("Title"));
+    }
 }

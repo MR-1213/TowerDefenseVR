@@ -6,14 +6,17 @@ public class WeaponGrabbedTrigger : MonoBehaviour
 {
     public AudioClip dropSwordSE;
 
-    [SerializeField] private TutorialManager tutorialManager;
-    [SerializeField] private PlayerWeaponManager playerWeaponManager;
-    [SerializeField] private PlayerControllerManager playerControllerManager;
+    private TutorialManager tutorialManager;
+    private PlayerWeaponManager playerWeaponManager;
+    private PlayerControllerManager playerControllerManager;
     private float grabbingTime = 0f;
 
     private void Start()
     {
         OVRGrabbable parent = transform.parent.GetComponent<OVRGrabbable>();
+        tutorialManager = GameObject.Find("TutorialExplanationManager").GetComponent<TutorialManager>();
+        playerWeaponManager = GameObject.Find("Player").GetComponent<PlayerWeaponManager>();
+        playerControllerManager = GameObject.Find("Player").GetComponent<PlayerControllerManager>();
         parent.enabled = false;
     }
 
@@ -22,6 +25,7 @@ public class WeaponGrabbedTrigger : MonoBehaviour
         if(other.gameObject.CompareTag("PlayerHand") && gameObject.CompareTag("PlayerSword"))
         {
             playerWeaponManager.AddWeapon(gameObject.transform.parent.gameObject);
+            playerControllerManager.isGrabWeapon = true;
             StartCoroutine(CountGrabbingSwordTime());
         }
 
@@ -52,7 +56,6 @@ public class WeaponGrabbedTrigger : MonoBehaviour
             {
                 tutorialManager.GrabbedTrigger = true;
 
-                playerControllerManager.isGrabWeapon = true;
                 playerControllerManager.grabWeapon = gameObject.transform.parent.gameObject;
 
                 break;
