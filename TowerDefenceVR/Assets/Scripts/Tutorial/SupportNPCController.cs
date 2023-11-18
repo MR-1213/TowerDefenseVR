@@ -40,7 +40,7 @@ public class SupportNPCController : MonoBehaviour
 
         foreach(Transform lookAtPosition in lookAtPositions.GetComponentsInChildren<Transform>())
         {
-            if(destinations != lookAtPositions.transform)
+            if(lookAtPosition != lookAtPositions.transform)
             {
                 lookAtPositionList.Add(lookAtPosition);
             }

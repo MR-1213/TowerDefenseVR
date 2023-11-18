@@ -34,6 +34,8 @@ public class WeaponGrabbedTrigger : MonoBehaviour
             var audio = this.gameObject.GetComponentInParent<AudioSource>();
             audio.clip = dropSwordSE;
             audio.PlayOneShot(audio.clip);
+
+            playerControllerManager.isGrabWeapon = false;
             Destroy(this.transform.parent.gameObject, 2.0f);
         }
     }
@@ -49,6 +51,7 @@ public class WeaponGrabbedTrigger : MonoBehaviour
             }
             else if(OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
             {
+                playerControllerManager.isGrabWeapon = false;
                 yield break;
             }
 

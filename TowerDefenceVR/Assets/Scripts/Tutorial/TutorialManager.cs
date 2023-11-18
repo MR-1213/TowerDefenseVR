@@ -24,10 +24,11 @@ public class TutorialManager : MonoBehaviour
     public bool SwordAttackedTrigger { get; set; } = false;
     public bool MagicAttackedTrigger { get; set; } = false;
     public bool KilledTrigger { get; set; } = false;
+    public bool PassingTrigger { get; set; } = false;
 
 
     //HalfEnemyKilledのコルーチンが開始したことを示すフラグ
-    public bool HalfCoroutineStarted { get; private set; } = false;
+    public bool PTPCoroutineStarted { get; private set; } = false;
 
     //AllEnemyKilledのコルーチンが開始したことを示すフラグ
     public bool AllCoroutineStarted { get; private set; } = false;
@@ -72,7 +73,7 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(TryAttackWithMagic());
                 break;
             case 5:
-                StartCoroutine(HalfEnemyKilled());
+                StartCoroutine(PassingTransitPoint());
                 break;
             case 6:
                 StartCoroutine(AllEnemyKilled());
@@ -141,13 +142,13 @@ public class TutorialManager : MonoBehaviour
         ResumeTimeline();
     }
 
-    private IEnumerator HalfEnemyKilled()
+    private IEnumerator PassingTransitPoint()
     {
-        HalfCoroutineStarted = true;
-        KilledTrigger = false;
-        yield return new WaitUntil(() => KilledTrigger);
-        KilledTrigger = false;
-        HalfCoroutineStarted = false;
+        PTPCoroutineStarted = true;
+        PassingTrigger = false;
+        yield return new WaitUntil(() => PassingTrigger);
+        PassingTrigger = false;
+        PTPCoroutineStarted = false;
 
         isTutorialPause = false;
         ResumeTimeline();

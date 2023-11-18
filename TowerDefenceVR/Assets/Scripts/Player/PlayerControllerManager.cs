@@ -14,6 +14,9 @@ public class PlayerControllerManager : MonoBehaviour
     [SerializeField] private GenerateMagic generateMagic;
     private PlayerWeaponManager playerWeaponManager;
 
+    [SerializeField] private GameObject rightControllerButtons;
+    [SerializeField] private GameObject leftControllerButtons;
+
     [SerializeField] private Transform underWristPos; //手首の下の位置
     [SerializeField] private Transform frontOfTheHandPos; //手のひらの前の位置
     [SerializeField] private SkinnedMeshRenderer controllerRenderer; //コントローラーのメッシュ
@@ -54,7 +57,7 @@ public class PlayerControllerManager : MonoBehaviour
         //左手のひらを前に向けたら生成済み魔法UIを表示する
         RaycastHit underWristHit;
         isCanvasActive = false;
-        if(Physics.Raycast(underWristPos.position, -underWristPos.forward, out underWristHit, 3.0f))
+        if(Physics.Raycast(underWristPos.position, -underWristPos.forward, out underWristHit, 5.0f))
         {
             //手首の下が地面を向いているかどうか
             if(underWristHit.collider.gameObject.CompareTag("Ground"))
@@ -68,6 +71,7 @@ public class PlayerControllerManager : MonoBehaviour
                         //DOTweenの動作回数を抑えるため、一度だけ実行する
                         if( controllerRenderer.material.color.a == 1f)
                         {
+                            ButtonsFlashStop();
                             controllerRenderer.material.DOFade(0f, 0.5f);
                             generatedMagicCanvasGroup.DOFade(1f, 0.5f);
 
@@ -84,6 +88,7 @@ public class PlayerControllerManager : MonoBehaviour
                 if(!isCanvasActive && controllerRenderer.material.color.a == 0f)
                 {
                     //DOTweenの動作回数を抑えるため、一度だけ実行する
+                    ButtonsFlashReStart();
                     controllerRenderer.material.DOFade(1f, 0.5f);
                     generatedMagicCanvasGroup.DOFade(0f, 0.5f);
                     playerUIManager.ChangeGeneratedMagicCanvasDisable();
@@ -93,6 +98,7 @@ public class PlayerControllerManager : MonoBehaviour
             else if(controllerRenderer.material.color.a == 0f)
             {
                 //DOTweenの動作回数を抑えるため、一度だけ実行する
+                ButtonsFlashReStart();
                 controllerRenderer.material.DOFade(1f, 0.5f);
                 generatedMagicCanvasGroup.DOFade(0f, 0.5f);
                 playerUIManager.ChangeGeneratedMagicCanvasDisable();
@@ -171,5 +177,21 @@ public class PlayerControllerManager : MonoBehaviour
         }
 
         
+    }
+
+    private void ButtonsFlashStop()
+    {
+        foreach(FlashingObject flashingObj in rightControllerButtons.GetComponentsInChildren<FlashingObject>())
+        {
+            flashingObj.StopFlashing();
+        }
+    }
+
+    private void ButtonsFlashReStart()
+    {
+        foreach(FlashingObject flashingObj in rightControllerButtons.GetComponentsInChildren<FlashingObject>())
+        {
+            flashingObj.ReStartFlashing();
+        }
     }
 }

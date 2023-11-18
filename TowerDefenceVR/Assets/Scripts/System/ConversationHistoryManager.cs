@@ -24,7 +24,7 @@ public class ConversationHistoryManager : MonoBehaviour
         {
             isOpenSetting = true;
             screenFade.fadeTime = 0f;
-            screenFade.fadeWaitTime = 1.0f;
+            //screenFade.fadeWaitTime = 1.0f;
             screenFade.FadeOut();
 
             StartCoroutine(SettingPanelActive());

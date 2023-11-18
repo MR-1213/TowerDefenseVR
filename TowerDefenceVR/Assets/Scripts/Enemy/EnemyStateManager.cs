@@ -48,6 +48,7 @@ public class EnemyStateManager : MonoBehaviour
 
     [SerializeField] private GenerateMagic generateMagic;
     [SerializeField] private EnemyManager enemyManager;
+    [SerializeField] private SphereCollider attackCollider;
     private Animator animator;
     private NavMeshAgent navMeshAgent;
     private AudioSource audioSource;
@@ -145,7 +146,7 @@ public class EnemyStateManager : MonoBehaviour
             }
         }
 
-        statusManager = new EnemyStatusManager(30.0f);
+        statusManager = new EnemyStatusManager(50.0f);
         enemyHPSlider.minValue = 0.0f;
         enemyHPSlider.maxValue = 30.0f;
         enemyHPSlider.value = enemyHPSlider.maxValue;
@@ -162,7 +163,7 @@ public class EnemyStateManager : MonoBehaviour
         if (other.gameObject.CompareTag("PlayerSword") && Vector3.Distance(transform.position, playerTransform.position) < 4.0f)
         {
             audioSource.PlayOneShot(enemyManager.GetAttackedSE());
-            statusManager.NormalDamage();
+            statusManager.SwordDamage();
             enemyHPSlider.DOValue(statusManager.HP, 0.5f);
             OVRInput.SetControllerVibration(0f, 0.5f, OVRInput.Controller.RTouch);
             DOVirtual.DelayedCall(1.0f, () => OVRInput.SetControllerVibration(0f, 0f, OVRInput.Controller.RTouch));
@@ -182,15 +183,17 @@ public class EnemyStateManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision col)
     {
+        //BoxColliderに魔法が当たったらダメージを受ける
         if(col.gameObject.CompareTag("PlayerMagic"))
         {
-            statusManager.NormalDamage();
+            statusManager.MagicDamage();
             enemyHPSlider.DOValue(statusManager.HP, 0.5f);
             if(statusManager.HP == 0)
             {
                 ChangeState(EnemyState.Dying);
             }
         }
+
     }
 
     private void ChangeState(EnemyState newState)
@@ -322,6 +325,22 @@ public class EnemyStateManager : MonoBehaviour
         {
             stateEnter = false;
         }
+    }
+
+    private void AttackImpactEvent()
+    {
+        if(enemyType == EnemyType.MagicEnemy) return;
+        
+        //攻撃判定を有効にする
+        attackCollider.enabled = true;
+
+        //0.2秒後に攻撃判定を無効にする
+        Invoke(nameof(DisableAttackCollider), 0.2f);
+    }
+
+    private void DisableAttackCollider()
+    {
+        attackCollider.enabled = false;
     }
 
     private void CheckEnemyType()
