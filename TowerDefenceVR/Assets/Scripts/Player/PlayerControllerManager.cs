@@ -10,6 +10,7 @@ using DG.Tweening;
 /// </summary>
 public class PlayerControllerManager : MonoBehaviour
 {
+    [SerializeField] private TutorialManager tutorialManager;
     [SerializeField] private PlayerUIManager playerUIManager;
     [SerializeField] private GenerateMagic generateMagic;
     private PlayerWeaponManager playerWeaponManager;
@@ -88,7 +89,7 @@ public class PlayerControllerManager : MonoBehaviour
                 if(!isCanvasActive && controllerRenderer.material.color.a == 0f)
                 {
                     //DOTweenの動作回数を抑えるため、一度だけ実行する
-                    ButtonsFlashReStart();
+                    if(!tutorialManager.MagicAttackedTrigger) ButtonsFlashReStart();
                     controllerRenderer.material.DOFade(1f, 0.5f);
                     generatedMagicCanvasGroup.DOFade(0f, 0.5f);
                     playerUIManager.ChangeGeneratedMagicCanvasDisable();
@@ -98,7 +99,7 @@ public class PlayerControllerManager : MonoBehaviour
             else if(controllerRenderer.material.color.a == 0f)
             {
                 //DOTweenの動作回数を抑えるため、一度だけ実行する
-                ButtonsFlashReStart();
+                if(!tutorialManager.MagicAttackedTrigger) ButtonsFlashReStart();
                 controllerRenderer.material.DOFade(1f, 0.5f);
                 generatedMagicCanvasGroup.DOFade(0f, 0.5f);
                 playerUIManager.ChangeGeneratedMagicCanvasDisable();
@@ -181,7 +182,7 @@ public class PlayerControllerManager : MonoBehaviour
 
     private void ButtonsFlashStop()
     {
-        foreach(FlashingObject flashingObj in rightControllerButtons.GetComponentsInChildren<FlashingObject>())
+        foreach(FlashingObject flashingObj in leftControllerButtons.GetComponentsInChildren<FlashingObject>())
         {
             flashingObj.StopFlashing();
         }
@@ -189,7 +190,7 @@ public class PlayerControllerManager : MonoBehaviour
 
     private void ButtonsFlashReStart()
     {
-        foreach(FlashingObject flashingObj in rightControllerButtons.GetComponentsInChildren<FlashingObject>())
+        foreach(FlashingObject flashingObj in leftControllerButtons.GetComponentsInChildren<FlashingObject>())
         {
             flashingObj.ReStartFlashing();
         }

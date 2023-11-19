@@ -176,16 +176,19 @@ public class OVRControllerHelper : MonoBehaviour
 
                 break;
             case OVRPlugin.SystemHeadset.Meta_Quest_Pro:
-                activeControllerType = ControllerType.TouchPro;
+                //activeControllerType = ControllerType.TouchPro;
+                activeControllerType = ControllerType.TouchPlus;
                 break;
             case OVRPlugin.SystemHeadset.Meta_Link_Quest_Pro:
-                activeControllerType = ControllerType.TouchPro;
+                //activeControllerType = ControllerType.TouchPro;
+                activeControllerType = ControllerType.TouchPlus;
                 break;
             case OVRPlugin.SystemHeadset.Meta_Quest_3:
             case OVRPlugin.SystemHeadset.Meta_Link_Quest_3:
                 if (profile == OVRPlugin.InteractionProfile.TouchPro)
                 {
-                    activeControllerType = ControllerType.TouchPro;
+                    //activeControllerType = ControllerType.TouchPro;
+                    activeControllerType = ControllerType.TouchPlus;
                 }
                 else
                 {

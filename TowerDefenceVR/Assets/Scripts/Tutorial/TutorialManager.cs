@@ -22,7 +22,7 @@ public class TutorialManager : MonoBehaviour
     public bool MovedTrigger { private get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
     public bool SwordAttackedTrigger { get; set; } = false;
-    public bool MagicAttackedTrigger { get; set; } = false;
+    public bool MagicAttackedTrigger { get; set; } = true;
     public bool KilledTrigger { get; set; } = false;
     public bool PassingTrigger { get; set; } = false;
 

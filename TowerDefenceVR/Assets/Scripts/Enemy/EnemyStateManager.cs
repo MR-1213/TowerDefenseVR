@@ -148,7 +148,7 @@ public class EnemyStateManager : MonoBehaviour
 
         statusManager = new EnemyStatusManager(50.0f);
         enemyHPSlider.minValue = 0.0f;
-        enemyHPSlider.maxValue = 30.0f;
+        enemyHPSlider.maxValue = 50.0f;
         enemyHPSlider.value = enemyHPSlider.maxValue;
     }
 
@@ -280,7 +280,6 @@ public class EnemyStateManager : MonoBehaviour
 
                 if(enemyType == EnemyType.SwordEnemy && isAnimStateEnd)
                 {
-                    Debug.Log("AttackIdle");
                     isAnimStateEnd = false;
                     CheckAttackTarget();
                     ChangeState(EnemyState.Attack);

@@ -13,6 +13,8 @@ TagManager:
   - EnemyMagic
   - Gauge
   - TargetCore
+  - DefenceTarget
+  - EnemySword
   layers:
   - Default
   - TransparentFX
