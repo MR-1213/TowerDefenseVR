@@ -10,13 +10,7 @@ using UnityEngine.UI;
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
-    //[SerializeField] private Button generateButton;
-    //[SerializeField] private TriggerManager triggerManager;
     private PlayableDirector playableDirector;
-    //private float touchStickTime = 0.0f;
-    //private int touchStickCount = 0;
-    //private float rightStickThreshold = 5.0f;
-    //private int leftStickThreshold = 5;
 
     public bool OKButtonClicked { private get; set; } = false;
     public bool MovedTrigger { private get; set; } = false;

@@ -11,14 +11,6 @@ public class DefenceTargetManager : MonoBehaviour
 
     [SerializeField] private Slider hpSlider;
 
-    private void Start()
-    {
-        hpSlider.minValue = 0.0f;
-        hpSlider.maxValue = currentHP;
-        currentHP -= 100.0f;
-        hpSlider.value = currentHP;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("EnemySword"))

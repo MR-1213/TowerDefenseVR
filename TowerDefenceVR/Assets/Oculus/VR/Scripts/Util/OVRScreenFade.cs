@@ -141,7 +141,7 @@ public class OVRScreenFade : MonoBehaviour
     /// </summary>
     public void FadeIn()
     {
-        StartCoroutine(Fade(1.0f, 0.0f));
+        StartCoroutine(Fade(1.0f, 0.0f, fadeTime));
     }
 
     /// <summary>
@@ -149,7 +149,12 @@ public class OVRScreenFade : MonoBehaviour
     /// </summary>
     public void FadeOut()
     {
-        StartCoroutine(Fade(0, 1));
+        StartCoroutine(Fade(0, 1, fadeTime));
+    }
+
+    public void FadeOutImmediate()
+    {
+        StartCoroutine(Fade(0, 1, 0f));
     }
 
     /// <summary>
@@ -209,7 +214,7 @@ public class OVRScreenFade : MonoBehaviour
     /// <summary>
     /// Fades alpha from 1.0 to 0.0
     /// </summary>
-    IEnumerator Fade(float startAlpha, float endAlpha)
+    IEnumerator Fade(float startAlpha, float endAlpha, float fadeTime)
     {
         float elapsedTime = 0.0f;
         while (elapsedTime < fadeTime)
