@@ -2,89 +2,85 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Banzan.Lib.Utility;
 
 /// <summary>
 /// プレイヤーに対して表示されるUIを管理するクラス
 /// </summary>
 public class PlayerUIManager : MonoBehaviour
 {
-    [Header("参照スクリプト")]
-    [SerializeField] private Chat chat;
-
     [Header("UI共通")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private LineRenderer lineRenderer;
+    private int laserAccessCount = 1;
 
-    [Header("魔法生成UI関係")]
-    [SerializeField] private GameObject playerNewMagicCanvas; 
-    [SerializeField] private TMP_InputField magicInputField;
-    private bool newMagicCanvasEnable = false;
-    private TouchScreenKeyboard keyboard;
+    [Header("魔法UI関係")]
+    [SerializeField] private GameObject generatedMagicCanvas;
+    private int latestSelectedMagicIndex = 0;
+    
 
-    [Header("生成済み魔法UI関係")]
-    [SerializeField] private TMP_Dropdown generatedMagicDropdown;
-    private bool generatedMagicCanvasEnable = false;
-
-    private void Awake() 
+    private void Start() 
     {
-        playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
-        lineRenderer.enabled = false;
+        LaserPointerDisable();
     }
 
-    private void Update() 
+    public void LaserPointerEnable()
     {
-        //キーボードの入力をインプットフィールドに反映する
-        if(keyboard != null)
+        laserAccessCount++;
+        lineRenderer.gameObject.SetActive(true);
+    }
+
+    public void LaserPointerDisable()
+    {
+        laserAccessCount--;
+        if(laserAccessCount <= 0)
         {
-            magicInputField.text = keyboard.text;
+            lineRenderer.gameObject.SetActive(false);
         }
-
-    }
-
-    public void ChangeNewMagicCanvasEnable()
-    {
-        //魔法生成のUIの表示・非表示を切り替える
-        newMagicCanvasEnable = !newMagicCanvasEnable;
-        playerNewMagicCanvas.SetActive(newMagicCanvasEnable);
-
-        //レーザーポインターの表示・非表示も切り替える
-        lineRenderer.enabled = newMagicCanvasEnable;
         
-        if(mainCamera != null)
-        {
-            //カメラの向いている方向の少し下にUIを配置する
-            playerNewMagicCanvas.transform.position = mainCamera.transform.position + mainCamera.transform.forward * 1.5f - mainCamera.transform.up * 1.0f;
-
-            Vector3 lookPos2 = mainCamera.transform.position - playerNewMagicCanvas.transform.position;
-
-            playerNewMagicCanvas.transform.rotation = Quaternion.LookRotation(lookPos2);
-            playerNewMagicCanvas.transform.Rotate(Vector3.up, 180f, Space.Self);
-        }
-    }
-
-    public void OnGenerateButton()
-    {
-        chat.OnGenerateButtonClick();
-    }
-
-    public void OnBackButton()
-    {
-        playerNewMagicCanvas.SetActive(false);
-        newMagicCanvasEnable = false;
-        lineRenderer.enabled = false;
     }
 
     public void ChangeGeneratedMagicCanvasEnable()
     {
-        generatedMagicCanvasEnable = true;
-        lineRenderer.enabled = true;
+        generatedMagicCanvas.transform.GetChild(latestSelectedMagicIndex).gameObject.SetActive(true);
     }
 
     public void ChangeGeneratedMagicCanvasDisable()
     {
-        generatedMagicCanvasEnable = false;
-        lineRenderer.enabled = false;
+        int childCount = generatedMagicCanvas.transform.childCount;
+
+        for(int i = 0; i < childCount; i++)
+        {
+            if(generatedMagicCanvas.transform.GetChild(i).gameObject.activeSelf)
+            {
+                generatedMagicCanvas.transform.GetChild(i).gameObject.SetActive(false);
+                latestSelectedMagicIndex = i;
+                break;
+            }
+        }
+    }
+
+    public void NextMagic()
+    {
+        int childCount = generatedMagicCanvas.transform.childCount;
+
+        for(int i = 0; i < childCount; i++)
+        {
+            if(generatedMagicCanvas.transform.GetChild(i).gameObject.activeSelf)
+            {
+                generatedMagicCanvas.transform.GetChild(i).gameObject.SetActive(false);
+                if(i == childCount - 1)
+                {
+                    generatedMagicCanvas.transform.GetChild(0).gameObject.SetActive(true);
+                }
+                else
+                {
+                    generatedMagicCanvas.transform.GetChild(i + 1).gameObject.SetActive(true);
+                }
+                
+                break;
+            }
+        }
+        
     }
     
 }

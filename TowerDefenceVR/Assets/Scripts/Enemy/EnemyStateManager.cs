@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using DG.Tweening;
+using Oculus.Interaction.Samples;
 
 /// <summary>
 /// 敵の状態を管理するクラス
@@ -30,7 +31,7 @@ public class EnemyStateManager : MonoBehaviour
     }
     [Header("敵の魔法属性")]
     public MagicElement magicElement;
-    [SerializeField] private GameObject[] magics;
+    private GameObject[] magics = new GameObject[8];
     private GameObject selectedMagic;
     
     [Header("敵の特性")]
@@ -39,28 +40,36 @@ public class EnemyStateManager : MonoBehaviour
     private float attackDistanceThreshold;
 
     [Header("敵の追跡対象")]
+    [SerializeField] private Transform targetCore;
     [SerializeField] private Transform playerTransform;
 
     [Header("手の位置")]
     [SerializeField] private Transform handTransform;
+
+    [SerializeField] private GenerateMagic generateMagic;
+    [SerializeField] private EnemyManager enemyManager;
+    [SerializeField] private SphereCollider attackCollider;
     private Animator animator;
     private NavMeshAgent navMeshAgent;
     private AudioSource audioSource;
     private EnemyStatusManager statusManager;
     private Slider enemyHPSlider;
+    private bool isCoreAttacking = false;
 
     private enum EnemyState{
-        Idle,
+        GoToCore,
         Chase,
         Attack,
         AttackIdle,
         Dying,
     }
-    private EnemyState currentState = EnemyState.Idle;
+    private EnemyState currentState = EnemyState.GoToCore;
     private bool stateEnter;
     private float stateTime;
     private Tween attackTween;
     private Attack_MazeCallback attackCallback;
+    private Attack_SwordCallback attackSwordCallback;
+    public bool isAnimStateEnd { get; set;} = false;
 
     private void Start() 
     {
@@ -69,8 +78,14 @@ public class EnemyStateManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         enemyHPSlider = GetComponentInChildren<Slider>();
 
+        for(int i = 0; i < magics.Length; i++)
+        {
+            magics[i] = generateMagic.enemyMagics[i];
+        }
+
         if(enemyType == EnemyType.SwordEnemy)
         {
+            attackSwordCallback = animator.GetBehaviour<Attack_SwordCallback>();
             chaseDistanceThreshold = 10.0f;
             attackDistanceThreshold = 2.0f;
         }
@@ -131,18 +146,24 @@ public class EnemyStateManager : MonoBehaviour
             }
         }
 
-        statusManager = new EnemyStatusManager(30.0f);
+        statusManager = new EnemyStatusManager(50.0f);
         enemyHPSlider.minValue = 0.0f;
-        enemyHPSlider.maxValue = 30.0f;
+        enemyHPSlider.maxValue = 50.0f;
         enemyHPSlider.value = enemyHPSlider.maxValue;
+    }
+
+    private void OnEnable() 
+    {
+        ChangeState(EnemyState.GoToCore);
     }
 
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.CompareTag("PlayerSword"))
+        //BoxColliderに剣が当たったらダメージを受ける
+        if (other.gameObject.CompareTag("PlayerSword") && Vector3.Distance(transform.position, playerTransform.position) < 4.0f)
         {
-            Debug.Log("PlayerSwordがヒットしました。");
-            statusManager.NormalDamage();
+            audioSource.PlayOneShot(enemyManager.GetAttackedSE());
+            statusManager.SwordDamage();
             enemyHPSlider.DOValue(statusManager.HP, 0.5f);
             OVRInput.SetControllerVibration(0f, 0.5f, OVRInput.Controller.RTouch);
             DOVirtual.DelayedCall(1.0f, () => OVRInput.SetControllerVibration(0f, 0f, OVRInput.Controller.RTouch));
@@ -151,20 +172,28 @@ public class EnemyStateManager : MonoBehaviour
                 ChangeState(EnemyState.Dying);
             }
         }
+
+        if(other.gameObject.CompareTag("TargetCore"))
+        {
+            isCoreAttacking = true;
+            ChangeState(EnemyState.Attack);
+        }
+        
     }
 
     private void OnCollisionEnter(Collision col)
     {
+        //BoxColliderに魔法が当たったらダメージを受ける
         if(col.gameObject.CompareTag("PlayerMagic"))
         {
-            Debug.Log("PlayerMagicがヒットしました。");
-            statusManager.NormalDamage();
+            statusManager.MagicDamage();
             enemyHPSlider.DOValue(statusManager.HP, 0.5f);
             if(statusManager.HP == 0)
             {
                 ChangeState(EnemyState.Dying);
             }
         }
+
     }
 
     private void ChangeState(EnemyState newState)
@@ -177,22 +206,16 @@ public class EnemyStateManager : MonoBehaviour
     private void Update() 
     {
         stateTime += Time.deltaTime;
-        if(enemyType == EnemyType.MagicEnemy)
-        {
-            if(attackCallback.isGenerateTime)
-            {
-                attackCallback.isGenerateTime = false;
-                Instantiate(selectedMagic, handTransform.position, handTransform.rotation);
-            }
-        }
 
         switch(currentState)
         {
-            case EnemyState.Idle:
+            case EnemyState.GoToCore:
             {
                 if(stateEnter)
                 {
-                    animator.SetTrigger("IdleTrigger");
+                    navMeshAgent.SetDestination(targetCore.position);
+                    
+                    animator.SetTrigger("CoreTrigger");
                 }
 
                 if(Vector3.Distance(transform.position, playerTransform.position) < chaseDistanceThreshold)
@@ -214,12 +237,13 @@ public class EnemyStateManager : MonoBehaviour
 
                 if(Vector3.Distance(transform.position, playerTransform.position) >= chaseDistanceThreshold)
                 {
-                    ChangeState(EnemyState.Idle);
+                    ChangeState(EnemyState.GoToCore);
                     return;
                 }
 
                 if(!navMeshAgent.pathPending && Vector3.Distance(transform.position, playerTransform.position) < attackDistanceThreshold)
                 {
+                    isCoreAttacking = false;
                     ChangeState(EnemyState.Attack);
                     return;
                 }
@@ -233,28 +257,37 @@ public class EnemyStateManager : MonoBehaviour
                 if(stateEnter)
                 {
                     CheckEnemyType();
+                    //NavMeshAgentを止める
+                    if(isCoreAttacking)
+                    {
+                        navMeshAgent.isStopped = true;
+                    }
+                    
                 }
 
-                if(Vector3.Distance(transform.position, playerTransform.position) >= attackDistanceThreshold + 0.5f)
+                if(!isCoreAttacking && Vector3.Distance(transform.position, playerTransform.position) >= attackDistanceThreshold + 0.5f)
                 {
                     ChangeState(EnemyState.Chase);
                     return;
                 }
 
-                if(enemyType == EnemyType.MagicEnemy)
-                {
-                    ChangeState(EnemyState.AttackIdle);
-                }
+                ChangeState(EnemyState.AttackIdle);
                 return;
             }
 
             case EnemyState.AttackIdle:
             {
-                if(stateTime > 5.0f)
+
+                if(enemyType == EnemyType.SwordEnemy && isAnimStateEnd)
                 {
-                    Vector3 playerDirection = playerTransform.position - transform.position;
-                    playerDirection.y = 0;
-                    transform.rotation = Quaternion.LookRotation(playerDirection);
+                    isAnimStateEnd = false;
+                    CheckAttackTarget();
+                    ChangeState(EnemyState.Attack);
+                    return;
+                }
+                else if(enemyType == EnemyType.MagicEnemy && stateTime > 5.0f)
+                {
+                    CheckAttackTarget();
                     ChangeState(EnemyState.Attack);
                     return;
                 }
@@ -277,6 +310,11 @@ public class EnemyStateManager : MonoBehaviour
 
                 return;
             }
+
+            default:
+            {
+                return;
+            }
         }
     }
 
@@ -286,6 +324,22 @@ public class EnemyStateManager : MonoBehaviour
         {
             stateEnter = false;
         }
+    }
+
+    private void AttackImpactEvent()
+    {
+        if(enemyType == EnemyType.MagicEnemy) return;
+        
+        //攻撃判定を有効にする
+        attackCollider.enabled = true;
+
+        //0.2秒後に攻撃判定を無効にする
+        Invoke(nameof(DisableAttackCollider), 0.2f);
+    }
+
+    private void DisableAttackCollider()
+    {
+        attackCollider.enabled = false;
     }
 
     private void CheckEnemyType()
@@ -304,5 +358,26 @@ public class EnemyStateManager : MonoBehaviour
                 break;
             }
         }
+    }
+
+    private void CheckAttackTarget()
+    {
+        if(isCoreAttacking)
+        {
+            Vector3 coreDirection = targetCore.position - transform.position;
+            coreDirection.y = 0;
+            transform.rotation = Quaternion.LookRotation(coreDirection);
+        }
+        else
+        {
+            Vector3 playerDirection = playerTransform.position - transform.position;
+            playerDirection.y = 0;
+            transform.rotation = Quaternion.LookRotation(playerDirection);
+        }
+    }
+
+    public void GenerateMagic()
+    {
+        Instantiate(selectedMagic, handTransform.position, handTransform.rotation);
     }
 }

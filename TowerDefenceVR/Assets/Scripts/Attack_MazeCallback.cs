@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Attack_MazeCallback : StateMachineBehaviour
 {
-    public bool isGenerateTime { get; set;} = false;
     private bool isNewAnimState = false;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -18,17 +17,13 @@ public class Attack_MazeCallback : StateMachineBehaviour
     {
         //現在のアニメーションステート名を取得
         var clipInformation = animator.GetCurrentAnimatorClipInfo(0)[0];
-        if(clipInformation.clip.name == "Attack_Maze")
-        {
-            var stateInformation = animator.GetCurrentAnimatorStateInfo(0);
+        var stateInformation = animator.GetCurrentAnimatorStateInfo(0);
             
-            var currentAnimTime = clipInformation.clip.length * stateInformation.normalizedTime;
-
-            if(currentAnimTime > 1.5f && isNewAnimState)
-            {
-                isNewAnimState = false;
-                isGenerateTime = true;
-            }
+        var currentAnimTime = clipInformation.clip.length * stateInformation.normalizedTime;
+        if(currentAnimTime > 1.5f && currentAnimTime < 1.6f && isNewAnimState)
+        {
+            isNewAnimState = false;
+            animator.gameObject.GetComponent<EnemyStateManager>().GenerateMagic();
         }
     }
 

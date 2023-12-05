@@ -9,17 +9,27 @@ public class EnemyStatusManager
 {
     public float HP { get; private set; }
 
-    private float normalDamage = 10.0f;
+    private float swordDamage = 10.0f;
+    private float magicDamage = 25.0f;
 
     public EnemyStatusManager(float hp)
     {
         HP = hp;
     }
 
-    public void NormalDamage()
+    public void SwordDamage()
     {
-        HP -= normalDamage;
+        HP -= swordDamage;
         if(HP <= 0)
+        {
+            HP = 0;
+        }
+    }
+
+    public void MagicDamage()
+    {
+        HP -= magicDamage;
+        if (HP <= 0)
         {
             HP = 0;
         }

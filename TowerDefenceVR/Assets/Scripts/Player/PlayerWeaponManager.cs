@@ -13,24 +13,25 @@ public class PlayerWeaponManager : MonoBehaviour
     private List<GameObject> getWeaponList = new List<GameObject>();
     private int weaponNum = 0; //表示させる武器を管理するインデックス
     private GameObject showedWeapon; //表示させている武器
-
-    private void Start() 
-    {
-        //各武器のRigidbodyコンポーネントを取得し無効化する
-        foreach(var weapon in allWeaponList)
-        {
-            allWeaponRigidbodyList.Add(weapon.GetComponent<Rigidbody>());
-            allWeaponRigidbodyList[allWeaponRigidbodyList.Count - 1].isKinematic = true;
-        }
-    }
+    private bool initialize = false;
 
     //武器を入手する
     public void AddWeapon(GameObject newWeapon)
     {
+        if(!initialize)
+        {
+            initialize = true;
+            //各武器のRigidbodyコンポーネントを取得し無効化する
+            foreach(var weapon in allWeaponList)
+            {
+                allWeaponRigidbodyList.Add(weapon.GetComponent<Rigidbody>());
+                allWeaponRigidbodyList[allWeaponRigidbodyList.Count - 1].isKinematic = true;
+            }
+        }
         //入手した武器をリストに追加する
         foreach(var weapon in allWeaponList)
         {
-            if(newWeapon.name == weapon.name)
+            if(newWeapon.name == weapon.name && !getWeaponList.Contains(weapon))
             {
                 getWeaponList.Add(weapon);
             }

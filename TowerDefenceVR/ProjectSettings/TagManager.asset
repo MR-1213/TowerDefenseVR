@@ -11,6 +11,10 @@ TagManager:
   - PlayerHand
   - FenceBarrier
   - EnemyMagic
+  - Gauge
+  - TargetCore
+  - DefenceTarget
+  - EnemySword
   layers:
   - Default
   - TransparentFX
@@ -24,7 +28,7 @@ TagManager:
   - PlayerMagic
   - Transparent UI
   - SupportNPC
-  - PreventFallBarrier
+  - 
   - 
   - 
   - 

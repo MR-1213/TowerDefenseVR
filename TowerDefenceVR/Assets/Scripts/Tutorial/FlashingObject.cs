@@ -11,6 +11,7 @@ public class FlashingObject : MonoBehaviour
 {
     private Material flashingMaterial;
     private bool isFlashing = false;
+    private bool stopFlag = false;
     private void Start() 
     {
         flashingMaterial = GetComponent<Renderer>().material;
@@ -36,5 +37,26 @@ public class FlashingObject : MonoBehaviour
             //マテリアルの透明度を0にする
             flashingMaterial.DOFade(0.0f, 0.01f);
         }
+    }
+
+    public void StopFlashing()
+    {
+        if(!isFlashing) return;
+
+        stopFlag = true;
+        isFlashing = false;
+        //点滅を止める
+        flashingMaterial.DOKill();
+        //マテリアルの透明度を0にする
+        flashingMaterial.DOFade(0.0f, 0.01f);
+    }
+
+    public void ReStartFlashing()
+    {
+        if(!stopFlag) return;
+
+        stopFlag = false;
+        isFlashing = true;
+        flashingMaterial.DOFade(0.5f, 1.2f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
     }
 }

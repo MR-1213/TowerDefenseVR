@@ -4,30 +4,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
-using Banzan.Lib.Utility;
 
 /// <summary>
 /// チュートリアルのタイムライン進行を管理するクラス
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
-    //[SerializeField] private Button generateButton;
-    //[SerializeField] private TriggerManager triggerManager;
     private PlayableDirector playableDirector;
-    //private float touchStickTime = 0.0f;
-    //private int touchStickCount = 0;
-    //private float rightStickThreshold = 5.0f;
-    //private int leftStickThreshold = 5;
 
-    public bool OKButtonClicked {private get; set; } = false;
-    public bool MovedTrigger {private get; set; } = false;
+    public bool OKButtonClicked { private get; set; } = false;
+    public bool MovedTrigger { private get; set; } = false;
     public bool GrabbedTrigger { get; set; } = false;
     public bool SwordAttackedTrigger { get; set; } = false;
-    public bool MagicAttackedTrigger { get; set; } = false;
+    public bool MagicAttackedTrigger { get; set; } = true;
+    public bool KilledTrigger { get; set; } = false;
+    public bool PassingTrigger { get; set; } = false;
 
-    public bool IsTutorialFlag { get; private set;}
-    
-    
+
+    //HalfEnemyKilledのコルーチンが開始したことを示すフラグ
+    public bool PTPCoroutineStarted { get; private set; } = false;
+
+    //AllEnemyKilledのコルーチンが開始したことを示すフラグ
+    public bool AllCoroutineStarted { get; private set; } = false;
+
+    //AdditionalEnemyKilledのコルーチンが開始したことを示すフラグ
+    public bool AdditionalCoroutineStarted { get; private set; } = false;
+
+
+    private bool isTutorialPause = false;
+
+    public bool IsTutorialFlag { get; private set; }
+
+
     public bool ClickedTrigger { get; set; } = false;
     public bool IsEndOfCastingVoice { get; set; } = false;
     public bool GeneratedTrigger { get; set; } = true;
@@ -39,8 +47,9 @@ public class TutorialManager : MonoBehaviour
 
     public void PauseTimeline(int stateNum)
     {
-        playableDirector.Pause();
-        switch(stateNum)
+        PauseTimeline();
+        isTutorialPause = true;
+        switch (stateNum)
         {
             case 0:
                 StartCoroutine(HowToMove());
@@ -57,12 +66,26 @@ public class TutorialManager : MonoBehaviour
             case 4:
                 StartCoroutine(TryAttackWithMagic());
                 break;
+            case 5:
+                StartCoroutine(PassingTransitPoint());
+                break;
+            case 6:
+                StartCoroutine(AllEnemyKilled());
+                break;
+            case 7:
+                StartCoroutine(AdditionalEnemyKilled());
+                break;
         }
     }
 
-    private void ResumeTimeline()
+    public void PauseTimeline()
     {
-        playableDirector.Resume();
+        playableDirector.Pause();
+    }
+
+    public void ResumeTimeline()
+    {
+        if(!isTutorialPause) playableDirector.Resume();
     }
 
     private IEnumerator HowToMove()
@@ -70,6 +93,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => OKButtonClicked);
         OKButtonClicked = false;
 
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
@@ -78,6 +102,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => MovedTrigger);
         MovedTrigger = false;
 
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
@@ -87,6 +112,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => GrabbedTrigger);
         GrabbedTrigger = false;
 
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
@@ -96,6 +122,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => SwordAttackedTrigger);
         SwordAttackedTrigger = false;
 
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
@@ -105,207 +132,44 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => MagicAttackedTrigger);
         MagicAttackedTrigger = false;
 
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
-    /*
-    public void IsTutorial()
+    private IEnumerator PassingTransitPoint()
     {
-        IsTutorialFlag = true;
-    }
+        PTPCoroutineStarted = true;
+        PassingTrigger = false;
+        yield return new WaitUntil(() => PassingTrigger);
+        PassingTrigger = false;
+        PTPCoroutineStarted = false;
 
-    IEnumerator WaitAndResumeForRightThick()
-    {
-        touchStickTime = 0.0f;
-        while(true)
-        {
-            if( OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp, OVRInput.Controller.RTouch) ||
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight, OVRInput.Controller.RTouch) ||
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown, OVRInput.Controller.RTouch) ||
-                OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft, OVRInput.Controller.RTouch))
-            {
-                touchStickTime += Time.deltaTime;
-            }
-
-            if(touchStickTime > rightStickThreshold)
-            {
-                break;
-            }
-
-            yield return null;
-        }
-
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
-    IEnumerator WaitAndResumeForLeftThick()
+    private IEnumerator AllEnemyKilled()
     {
-        touchStickCount = 0;
-        while(true)
-        {
-            if(OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickRight, OVRInput.Controller.LTouch) ||
-                OVRInput.GetDown(OVRInput.Button.PrimaryThumbstickLeft, OVRInput.Controller.LTouch))
-            {
-                touchStickCount++;
-            }
+        AllCoroutineStarted = true;
+        KilledTrigger = false;
+        yield return new WaitUntil(() => KilledTrigger);
+        KilledTrigger = false;
+        AllCoroutineStarted = false;
 
-            if(touchStickCount > leftStickThreshold)
-            {
-                break;
-            }
-
-            yield return null;
-        }
-
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
-    IEnumerator MovedToSwordPoint()
+    private IEnumerator AdditionalEnemyKilled()
     {
-        while(true)
-        {
-            if(MovedTrigger)
-            {
-                MovedTrigger = false;
-                break;
-            }
+        AdditionalCoroutineStarted = true;
+        KilledTrigger = false;
+        yield return new WaitUntil(() => KilledTrigger);
+        KilledTrigger = false;
+        AdditionalCoroutineStarted = false;
 
-            yield return null;
-        }
-
+        isTutorialPause = false;
         ResumeTimeline();
     }
 
-    IEnumerator GrabbedSword()
-    {
-        GrabbedTrigger = false;
-        triggerManager.isInProcess = false;
-        while(true)
-        {
-            if(GrabbedTrigger)
-            {
-                GrabbedTrigger = false;
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator MovedToEnemyPoint()
-    {
-        MovedTrigger = false;
-        while(true)
-        {
-            if(MovedTrigger)
-            {
-                MovedTrigger = false;
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator KilledEnemy()
-    {
-        while(true)
-        {
-            if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
-            {
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator ClickedYButton()
-    {
-        while(true)
-        {
-            if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-            {
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator ClickedGenerateButton()
-    {
-        generateButton.interactable = true;
-        ClickedTrigger = false;
-        while(true)
-        {
-            if(ClickedTrigger)
-            {
-                ClickedTrigger = false;
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator GeneratedMagic()
-    {
-        GeneratedTrigger = false;
-        while(true)
-        {
-            if(GeneratedTrigger)
-            {
-                GeneratedTrigger = false;
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator KilledMultiEnemies()
-    {
-        while(true)
-        {
-            if(GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
-            {
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-
-    IEnumerator GettingCloseMultipleEnemies()
-    {
-        MovedTrigger = false;
-        while(true)
-        {
-            if(MovedTrigger)
-            {
-                MovedTrigger = false;
-                break;
-            }
-
-            yield return null;
-        }
-
-        ResumeTimeline();
-    }
-    */
 }

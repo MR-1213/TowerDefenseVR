@@ -12,6 +12,7 @@ public class SetExplanationText : MonoBehaviour
 {
     [SerializeField] private DialogTextManager dialogTextManager;
     [SerializeField] private PlayableDirector director;
+    [SerializeField] private ConversationHistoryManager conversationHistoryManager;
 
     private TimelineAsset timeline;
     private AudioTrack audioTrack;
@@ -31,18 +32,27 @@ public class SetExplanationText : MonoBehaviour
         "よし、奥にいる盾持ちが練習相手になってくれる。盾の耐久力が半分になるまで攻撃してみるんだ！",
         "なかなか筋がいいな！一度こちらに戻って来てくれ！",
         "今度は魔法で遠距離から攻撃してみろ。魔法の属性は問わない、上手く狙いを定めるんだ！" +
-        "一度詠唱した魔法は無詠唱で打つこともできるからな、そっちも試してみるといいぞ",
+        "魔法は遠くの敵にも有効だが、即座に攻撃できないのが難点だ。",
         "よし、上手いぞ！敵によって弱点の属性は異なるから上手くいろいろな属性の魔法を使い分けるんだ",
         "さて、今度は集団戦の練習をするから少し移動するぞ、ここより広い訓練場があるからそこに向かう",
         "こっちだ、ついてきてくれ",
-        "そうだ、この左の塔はこの駐屯地全体を守る防御結界の要としても機能している重要な施設なんだ",
+        "そうだ、この駐屯地内にある3つの塔は、この駐屯地全体を守る防御結界の要としても機能している重要な施設なんだ",
         "何か問題が発生したらこの施設を最優先で守ってほしいということだけ覚えておいてくれ",
         "さて、改めて訓練場向かうとしよう",
         "ん？今の音は...？",
-        "な...！？東の塔が...！結界で防ぎきれなかったのか...！？",
+        "な...！？東塔が...！結界で防ぎきれなかったのか...！？",
         "まずい、とにかく奥の東の塔のもとまで急ぐぞ！",
         "くそっ、既に敵が侵入している！",
-        "ぐずぐずしている暇はないな...奥の訓練場にいる敵を倒すぞ！すまないが、集団戦は早速実戦だ！"
+        "ぐずぐずしている暇はないな...奥の訓練場にいる敵を倒すぞ！すまないが、集団戦は早速実戦だ！",
+        "敵にも魔法を使うやつがいるぞ！！物陰に隠れて攻撃を避けながら戦うんだ！",
+        "よし、なんとか倒したな！いきなりの実戦にしてはやるじゃないか...！",
+        "まずい、東塔が集中的に狙われている...！すまないが、東塔の防衛に回ってくれ！",
+        "東塔が完全に落とされる前に倒しきるんだ！",
+        "よし、なんとか防衛には成功だな！一旦こちらに来てくれ！",
+        "東塔を守ることができて本当に良かった...中央塔と西塔もどうやら無事らしい。",
+        "しかし、気になる報告が先ほどあってな...別の敵の集団がここを無視して近隣の村や町の方面に向かったらしいんだ",
+        "すぐにでも全員で追いかけたいが、ここがまた攻撃を受けるとも分からないか...",
+        "よし、いきなりで申し訳ないが、君にはその敵を追ってほしい。この駐屯地の防衛は任せておけ。なんとしても村民や町民に被害が出ることを防ぐんだ！"
     };
 
     private void Start()
@@ -51,15 +61,6 @@ public class SetExplanationText : MonoBehaviour
 
         // TimelineAssetを取得
         timeline = (TimelineAsset)director.playableAsset;
-        // AudioTrackを取得
-        foreach (TrackAsset trackAsset in timeline.GetOutputTracks())
-        {
-            if (trackAsset is AudioTrack)
-            {
-                audioTrack = (AudioTrack)trackAsset;
-                break;
-            }
-        }
     }
 
     public void SetText()
@@ -72,25 +73,11 @@ public class SetExplanationText : MonoBehaviour
 
         //最初のテキストを取得し、Listから削除
         nextText = explanationTextList[0];
+        conversationHistoryManager.AddConversationHistory(nextText);
         explanationTextList.RemoveAt(0);
         explanationText.text = nextText;
 
         //テキスト送りを開始する
         dialogTextManager.Show(explanationText);
-    }
-
-    private AudioClip GetCurrentAudioClip()
-    {
-        foreach (TimelineClip clip in audioTrack.GetClips())
-        {
-            if (clip.start <= director.time && clip.end > director.time)
-            {
-                AudioPlayableAsset audioPlayableAsset = clip.asset as AudioPlayableAsset;
-                AudioClip currentClip = audioPlayableAsset.clip;
-                return currentClip;
-            }
-        }
-
-        return null;
     }
 }
