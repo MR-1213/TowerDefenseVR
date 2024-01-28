@@ -7,13 +7,13 @@ using DG.Tweening;
 
 public class SceneTransitionManager : MonoBehaviour
 {
-    public static SceneTransitionManager sceneManagerInstance;
+    public static SceneTransitionManager Instance {get; private set;}
 
     private void Awake()
     {
-        if (sceneManagerInstance == null)
+        if (Instance == null)
         {
-            sceneManagerInstance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -22,11 +22,11 @@ public class SceneTransitionManager : MonoBehaviour
         }
     }
 
-    public void SceneTransition()
+    public void SceneTransition(string sceneName)
     {
         FadeManager.fadeManagerInstance.FadeOutToIn(() =>
         {
-            SceneManager.LoadScene("Tutorial");
+            SceneManager.LoadScene(sceneName);
         });
     }
 

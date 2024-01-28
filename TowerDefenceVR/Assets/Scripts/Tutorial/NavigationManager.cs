@@ -24,8 +24,21 @@ public class NavigationManager : MonoBehaviour
     
     private void Update()
     {
-        float distanceToTarget = Vector3.Distance(player.position, npc.position);
-        Debug.Log(distanceToTarget);
+        float distanceToTarget;
+        if(tutorialManager.PTPCoroutineStarted)
+        {
+            distanceToTarget = Vector3.Distance(player.position, tutorialPoints[0].gameObject.transform.position);
+        }
+        else if(tutorialManager.AdditionalCoroutineStarted)
+        {
+            distanceToTarget = Vector3.Distance(player.position, tutorialPoints[1].gameObject.transform.position);
+        }
+        else
+        {
+            distanceToTarget = Vector3.Distance(player.position, npc.position);
+        }
+
+        // Debug.Log(distanceToTarget);
 
         if (distanceToTarget >= maxShowDistance)
         {

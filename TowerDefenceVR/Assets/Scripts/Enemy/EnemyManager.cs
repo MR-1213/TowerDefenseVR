@@ -2,76 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+namespace MainStage
 {
-    [SerializeField] private TutorialManager tutorialManager;
-    [SerializeField] private GameObject firstEnemies;
-    [SerializeField] private GameObject secondEnemies;
-    [SerializeField] private SphereCollider passingPoint;
-    
-    public AudioClip AttackedSE;
-
-    List<GameObject> firstEnemyList = new List<GameObject>();
-    List<GameObject> secondEnemyList = new List<GameObject>();
-
-    private void Start() 
+    public class EnemyManager : MonoBehaviour
     {
-        foreach(Transform enemy in firstEnemies.GetComponentInChildren<Transform>())
-        {
-            if(enemy.gameObject.CompareTag("Enemy"))
-            {
-                firstEnemyList.Add(enemy.gameObject);
-            }
-        }
-        
-        foreach(Transform enemy in secondEnemies.GetComponentInChildren<Transform>())
-        {
-            if(enemy.gameObject.CompareTag("Enemy"))
-            {
-                secondEnemyList.Add(enemy.gameObject);
-            }
-        }
-    }
+        [SerializeField] private List<GameObject> enemyList = new List<GameObject>();
+        public List<GameObject> generatedEnemyList = new List<GameObject>();
+        float elapsedTime = 0f;
 
-    private void Update() 
-    {
-        if(tutorialManager.AllCoroutineStarted)
+        private void Update()
         {
-            firstEnemyList.Clear();
-            foreach(Transform enemy in firstEnemies.GetComponentInChildren<Transform>())
-            {
-                if(enemy.gameObject.CompareTag("Enemy"))
-                {
-                    firstEnemyList.Add(enemy.gameObject);
-                }
-            }
-            //チュートリアル : 全ての敵を倒したかどうか
-            if(firstEnemyList.Count == 0)
-            {
-                tutorialManager.KilledTrigger = true;
-            }
+            elapsedTime += Time.deltaTime;
 
-        }
-        else if(tutorialManager.AdditionalCoroutineStarted)
-        {
-            secondEnemyList.Clear();
-            foreach(Transform enemy in secondEnemies.GetComponentInChildren<Transform>())
+            if (elapsedTime > 10f)
             {
-                if(enemy.gameObject.CompareTag("Enemy"))
-                {
-                    secondEnemyList.Add(enemy.gameObject);
-                }
-            }
-            //チュートリアル : 全ての敵を倒したかどうか
-            if(secondEnemyList.Count == 0)
-            {
-                tutorialManager.KilledTrigger = true;
+                elapsedTime = 0f;
+                GenerateEnemy();
             }
         }
-    }
 
-    public AudioClip GetAttackedSE()
-    {
-        return AttackedSE;
+        private void GenerateEnemy()
+        {
+            int randomIndex = Random.Range(1, 11);
+            Vector3 randomPosition = new Vector3(Random.Range(10f, 50f), 0f, Random.Range(65f, 75f));
+            if(randomIndex < 7)
+            {
+                GameObject enemy = Instantiate(enemyList[0], randomPosition, Quaternion.identity);
+            }
+            generatedEnemyList.Add()
+        }
     }
 }

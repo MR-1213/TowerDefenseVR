@@ -21,7 +21,7 @@ public class TutorialManager : MonoBehaviour
     public bool PassingTrigger { get; set; } = false;
 
 
-    //HalfEnemyKilledのコルーチンが開始したことを示すフラグ
+    //PassingTransitPointのコルーチンが開始したことを示すフラグ
     public bool PTPCoroutineStarted { get; private set; } = false;
 
     //AllEnemyKilledのコルーチンが開始したことを示すフラグ
@@ -86,6 +86,11 @@ public class TutorialManager : MonoBehaviour
     public void ResumeTimeline()
     {
         if(!isTutorialPause) playableDirector.Resume();
+    }
+
+    public void ReturnMenu()
+    {
+        SceneTransitionManager.Instance.SceneTransition("Title");
     }
 
     private IEnumerator HowToMove()
