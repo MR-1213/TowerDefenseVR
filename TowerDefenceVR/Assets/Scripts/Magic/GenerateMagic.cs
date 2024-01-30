@@ -10,6 +10,8 @@ using TMPro;
 /// </summary>
 public class GenerateMagic : MonoBehaviour
 {
+    public static GenerateMagic Instance { get; private set; }
+
     [SerializeField] Transform magicCastParent;
     [SerializeField] Transform generatedMagicUIParent;
     [SerializeField] GameObject generatedMagicUI;

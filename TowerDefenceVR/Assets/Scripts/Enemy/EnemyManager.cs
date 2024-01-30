@@ -6,9 +6,24 @@ namespace MainStage
 {
     public class EnemyManager : MonoBehaviour
     {
+        public static EnemyManager Instance { get; private set;}
+
+        [Header("敵のリスト")]
         [SerializeField] private List<GameObject> enemyList = new List<GameObject>();
-        public List<GameObject> generatedEnemyList = new List<GameObject>();
-        float elapsedTime = 0f;
+        private List<GameObject> spawnedEnemyList = new List<GameObject>();
+        float elapsedTime = 10f; // ゲーム経過時間
+
+        private void Awake()
+        {
+            if(Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
 
         private void Update()
         {
@@ -17,19 +32,24 @@ namespace MainStage
             if (elapsedTime > 10f)
             {
                 elapsedTime = 0f;
-                GenerateEnemy();
+                SpawnEnemy();
             }
         }
 
-        private void GenerateEnemy()
+        private void SpawnEnemy()
         {
-            int randomIndex = Random.Range(1, 11);
-            Vector3 randomPosition = new Vector3(Random.Range(10f, 50f), 0f, Random.Range(65f, 75f));
-            if(randomIndex < 7)
+            // 同時に出現する敵の数を制限
+            if(spawnedEnemyList.Count >= 5)
             {
-                GameObject enemy = Instantiate(enemyList[0], randomPosition, Quaternion.identity);
+                // スポーンさせない
+                return;
             }
-            generatedEnemyList.Add()
+
+            int randomIndex = Random.Range(0, enemyList.Count);
+            Vector3 randomPosition = new Vector3(Random.Range(10f, 50f), 0f, Random.Range(65f, 75f));
+            
+            GameObject enemy = Instantiate(enemyList[randomIndex], randomPosition, Quaternion.identity);
+            spawnedEnemyList.Add(enemy);  
         }
     }
 }

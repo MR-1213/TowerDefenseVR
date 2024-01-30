@@ -71,8 +71,24 @@ public class EnemyStateManager : MonoBehaviour
     private Attack_SwordCallback attackSwordCallback;
     public bool isAnimStateEnd { get; set;} = false;
 
+    private void Awake() 
+    {
+        InitializeReferences();
+    }
+
+    private void InitializeReferences()
+    {
+        if(targetCore == null) targetCore = GameObject.FindGameObjectWithTag("TargetCore").transform;
+        if(playerTransform == null) playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        if(generateMagic == null) generateMagic = GameObject.Find("MagicManager").GetComponent<GenerateMagic>();
+        if(enemyManager == null) enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
+        if(attackCollider == null) attackCollider = GetComponentInChildren<SphereCollider>();
+        
+    }
+
     private void Start() 
     {
+
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         audioSource = GetComponent<AudioSource>();
@@ -221,6 +237,13 @@ public class EnemyStateManager : MonoBehaviour
                 if(Vector3.Distance(transform.position, playerTransform.position) < chaseDistanceThreshold)
                 {
                     ChangeState(EnemyState.Chase);
+                    return;
+                }
+
+                if(!navMeshAgent.pathPending && Vector3.Distance(transform.position, targetCore.position) < attackDistanceThreshold)
+                {
+                    isCoreAttacking = true;
+                    ChangeState(EnemyState.Attack);
                     return;
                 }
 
